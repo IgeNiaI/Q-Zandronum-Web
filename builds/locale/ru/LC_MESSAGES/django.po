@@ -1,0 +1,57 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-12-05 21:12+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
+"%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
+"%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#: builds/models.py:13
+msgid "platform"
+msgstr ""
+
+#: builds/models.py:14
+msgid "platforms"
+msgstr ""
+
+#: builds/models.py:26
+msgid "build"
+msgstr ""
+
+#: builds/models.py:27
+msgid "builds"
+msgstr ""
+
+#: builds/models.py:44
+msgid "date and time file was changed"
+msgstr ""
+
+#: builds/models.py:59
+msgid "feature translation"
+msgstr ""
+
+#: builds/models.py:60
+msgid "feature translations"
+msgstr ""
+
+#: builds/models.py:85
+msgid "feature"
+msgstr ""
+
+#: builds/models.py:86
+msgid "features"
+msgstr ""

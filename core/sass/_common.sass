@@ -1,0 +1,30 @@
+$prime_bg_colour: #FFF
+$accent_colour: #830808
+$prime_colour: #343a40
+$prime_subcolour: #444
+$alt_bg_subcolour: #C2C2C2
+$alt_bg_colour: $prime_colour
+$alt_bg_font: #FFF
+$alt_bg_link: #EEE
+$alt_bg_secondary_colour: #9c9c9c
+
+@import '_pythonvars.sass'
+
+=img-background($url, $repeat)
+    background-image: url("#{$static_url}#{$url}")
+    background-repeat: $repeat
+
+=wk-transition-delay($val)
+    -webkit-transition-delay: $val
+    transition-delay: $val
+
+=wk-transform-origin($val)
+    -webkit-transform-origin: $val
+    -o-transform-origin: $val
+    -ms-transform-origin: $val
+
+=alpha_gradient($pallete, $clrx, $clrxa)
+    background: -moz-linear-gradient(top, unquote("rgba(#{$pallete},1)") 0%, unquote("rgba(#{$pallete},0)") 100%) // FF3.6-15 */
+    background: -webkit-linear-gradient(top, unquote("rgba(#{$pallete},1)") 0%, unquote("rgba(#{$pallete},0)") 100%) //* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, unquote("rgba(#{$pallete},1)") 0%, unquote("rgba(#{$pallete},0)") 100%) //* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#{$clrx}', endColorstr='#{$clrxa}',GradientType=0 ) //* IE6-9 */

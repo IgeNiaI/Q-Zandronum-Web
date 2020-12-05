@@ -1,0 +1,106 @@
+@import '_pythonvars.sass'
+@import '_common'
+
+@font-face
+  font-family: "CenturyGothic-Bold"
+  src: url("/static/fonts/8483.otf") format("opentype"), url("/static/fonts/8483.woff") format("woff"), url("/static/fonts/8483.woff2") format("woff2")
+  font-weight: normal
+  font-style: normal
+
+body
+    width: 100%
+    min-height: 100vh
+    // position: relative
+    font-size: 16px
+    background-color: $prime_bg_colour
+    font-family: "CenturyGothic-Bold"
+
+h1, h2, h3
+    text-align: center
+
+.cnt
+    text-align: center
+
+.hdn
+    display: none
+
+#copyrights
+    font-size: 0.8rem
+
+#language-group
+    max-width: 300px
+
+.accent-colour
+    color: $accent_colour
+
+.prime-colour
+    color: $prime_colour
+
+.subcolour
+    colour: $prime_subcolour
+
+.alt-bg
+    background-color: $alt_bg_colour
+    color: $alt_bg_font
+    a
+        color: $alt_bg_link
+        text-decoration: none
+        &:hover
+            color: $alt_bg_font
+    .subcolour
+        color: $alt_bg_subcolour
+        b
+            color: lighten($alt_bg_subcolour, 12%)
+
+.feature-item
+    text-align: center
+    margin-bottom: 1rem
+    svg, img
+        height: 10rem
+        //max-width: 8rem
+    p
+        margin-bottom: 0
+        font-size: 1.2rem
+    p:first-of-type
+        font-size: 1.5rem
+        font-weight: 600
+
+.accent-item
+    background: $accent_colour
+    padding: 1rem 2rem
+    min-width: 200px
+
+.build-item
+    background: $alt_bg_secondary_colour
+
+.q-mobile
+    display: none
+
+@media (min-width: 577px)
+    h1 > span
+        width: 46%
+        text-align: left
+        &:first-of-type
+            text-align: right
+
+@media (max-width: 576px)
+    h1 > span
+        text-align: center
+        width: 100%
+    .q-icon
+        font-size: 5rem
+        width: 100%
+        padding-right: 3px
+    .q-mobile
+        color: inherit !important
+        display: initial
+    .feature-item
+        svg, img
+            height: 7rem
+
+footer
+    width: 100%
+    padding: 1rem
+
+$django_shadow_dist: 1px
+$django_shadow_colour: black
