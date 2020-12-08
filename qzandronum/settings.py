@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.11.1-a1"
+__version__ = "0.11.2-a1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -65,6 +65,7 @@ class BaseSettings():
                       'django.contrib.messages',
                       # 'django.contrib.sites',  # needed for sitemap framework
                       'debug_toolbar',
+                      'sniplates',
                       'celestia',
                       'core',
                       'builds',
@@ -74,7 +75,7 @@ class BaseSettings():
 
     MIDDLEWARE = ['django.middleware.security.SecurityMiddleware',
                   'django.contrib.sessions.middleware.SessionMiddleware',
-                  'debug_toolbar.middleware.DebugToolbarMiddleware',
+                  # 'debug_toolbar.middleware.DebugToolbarMiddleware',
                   'django.middleware.locale.LocaleMiddleware',
                   'django.middleware.common.CommonMiddleware',
                   'django.middleware.csrf.CsrfViewMiddleware',

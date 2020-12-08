@@ -150,6 +150,17 @@ Django = ">=1.11"
 sqlparse = ">=0.2.0"
 
 [[package]]
+name = "django-sniplates"
+version = "0.7.0"
+description = "Efficient template macro sets for Django"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+Django = ">=2.2"
+
+[[package]]
 name = "filelock"
 version = "3.0.12"
 description = "A platform independent file lock."
@@ -378,7 +389,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.6"
-content-hash = "892a506085885118e3c14d737954bc478ecce664973d342017971476c74e2280"
+content-hash = "70787d57872544e9c76b1a3b276f02c974ff0f72f3ff23f5703c574ab400bf11"
 
 [metadata.files]
 appdirs = [
@@ -427,6 +438,9 @@ django-classy-settings = [
 django-debug-toolbar = [
     {file = "django-debug-toolbar-2.2.tar.gz", hash = "sha256:eabbefe89881bbe4ca7c980ff102e3c35c8e8ad6eb725041f538988f2f39a943"},
     {file = "django_debug_toolbar-2.2-py3-none-any.whl", hash = "sha256:ff94725e7aae74b133d0599b9bf89bd4eb8f5d2c964106e61d11750228c8774c"},
+]
+django-sniplates = [
+    {file = "django-sniplates-0.7.0.tar.gz", hash = "sha256:87cbf0f5297c921ca1ffd5254cded23166c01a874236ad3608ac7fca64a84d8a"},
 ]
 filelock = [
     {file = "filelock-3.0.12-py3-none-any.whl", hash = "sha256:929b7d63ec5b7d6b71b0fa5ac14e030b3f70b75747cef1b10da9b879fef15836"},

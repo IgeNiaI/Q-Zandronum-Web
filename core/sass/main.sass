@@ -18,6 +18,12 @@ body
 h1, h2, h3
     text-align: center
 
+.fnt-sm
+    font-size: 85%
+
+.fnt-tiny
+    font-size: 75%
+
 .cnt
     text-align: center
 
@@ -72,6 +78,17 @@ h1, h2, h3
 
 .build-item
     background: $alt_bg_secondary_colour
+    min-width: 192px
+    transition-property: box-shadow, background-color
+    transition-duration: 0.8s
+    transition-timing-function: ease
+    transition-delay: 0.15s
+    &:hover
+        background-color: lighten($alt_bg_secondary_colour, 12%)
+        box-shadow: 0 0 0.5rem white, 0 0 0.25rem white !important
+        cursor: pointer
+    .subcolour
+        color: darken($alt_bg_secondary_colour, 25%)
 
 .q-mobile
     display: none
