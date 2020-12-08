@@ -26,12 +26,11 @@
             {{ build.platform }}
         </h5>
         <span>
-            <span class='fnt-tiny subcolour'>{% trans 'ver' %}.</span>
-            {{ build.version }}
+            <span class='fnt-tiny subcolour'>{% trans 'ver' %}.</span>{{ build.version }}
         </span>
     </div>
     <div class='d-flex prime-colour justify-content-between align-items-baseline'>
-        <span>{% if platform.has_doomseeker %}
+        <span>{% if build.has_doomseeker %}
             {% trans 'with doomseeker' %}
             {% else %}
             {% trans 'engine only' %}

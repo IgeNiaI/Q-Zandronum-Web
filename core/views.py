@@ -38,10 +38,15 @@ class IndexView(PageConfigMixin, ListView):
     page_name = 'index'
 
     def get_queryset(self):
-        return self.model.objects.translated()
+        qs = self.model.objects.translated()
+        # NOTE fallback
+        if len(qs) == 0:
+            qs = self.model.objects.filter(lang_code='en')
+        return qs
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['builds'] = Build.objects.select_related('platform')
+        builds = Build.objects.select_related('platform').order_by('platform', 'has_doomseeker')
+        context['builds'] = builds
         context['page_config'] = self.get_page_config()
         return context
