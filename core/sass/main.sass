@@ -78,17 +78,29 @@ h1, h2, h3
 
 .build-item
     background: $alt_bg_secondary_colour
-    min-width: 208px
+    min-width: 224px
     transition-property: box-shadow, background-color
     transition-duration: 0.8s
     transition-timing-function: ease
     transition-delay: 0.15s
+    flex-grow: 0
+    u
+        text-decoration-color: darken($alt_bg_secondary_colour, 25%)
     &:hover
         background-color: lighten($alt_bg_secondary_colour, 12%)
         box-shadow: 0 0 0.5rem white, 0 0 0.25rem white !important
         cursor: pointer
+        .hover-highlight
+            color: lighten($accent_colour, 10%)
     .subcolour
         color: darken($alt_bg_secondary_colour, 25%)
+
+.hover-highlight
+    transition-property: color
+    transition-duration: 0.8s
+    transition-timing-function: ease
+    transition-delay: 0.15s
+
 
 .q-mobile
     display: none

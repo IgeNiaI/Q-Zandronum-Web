@@ -20,7 +20,7 @@
 {% block footer %} {% load_widgets widgets='sniplates_widgets.html' %}
     <h2 class='mb-3'>{% trans 'Downloads' %}</h2>
     <div id="downloads" class="container flex-grow-2">
-        <div class='d-flex row justify-content-between'>
+        <div class='d-flex row justify-content-around'>
         {% for build in builds %}
             {% widget "widgets:download_item" build=build %}
         {% empty %}
