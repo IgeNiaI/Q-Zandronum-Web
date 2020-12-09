@@ -1,6 +1,10 @@
+import hashlib
+import os
+import zlib
 from datetime import datetime
 
-from celestia.abstract_models import AbstractDateTimeTrackedModel
+from celestia.abstract_models import (AbstractDateTimeTrackedModel,
+                                      FileProcessingMixin)
 from celestia.bleach_models import BleachMixin
 from celestia.translation.models import (AbstractTranslatedModel,
                                          BaseTranslatedQuerySet)
@@ -22,7 +26,7 @@ class Platform(models.Model):
         return self.name
 
 
-class Build(AbstractDateTimeTrackedModel):
+class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
     class Meta:
         verbose_name = _('build')
         verbose_name_plural = _('builds')
@@ -34,7 +38,26 @@ class Build(AbstractDateTimeTrackedModel):
              # name='%(app_label)s_%(class)s_unique_for_pfm_and_chksum')
         ]
 
-    file = models.FileField(default='test.txt')
+    def make_filename(obj, filename):
+        parts = ['QZandronum', obj.version, obj.platform.name.lower(), obj.crc32]
+        ext = os.path.splitext(filename)[-1].lower()  # it has "."
+        return "-".join(parts) + ext
+
+    _file_fields_to_process = {
+        'file': {
+            'checksum_a':
+            {
+                'function': hashlib.sha1,
+                'attr': 'hexdigest',
+                'postprocessor': lambda val: 'sha1|' + val,  # | is a separator for checksum method
+                'update_datetime_field': 'file_datetime',
+            },
+            'crc32': {'function': zlib.crc32, 'postprocessor': lambda val: f"{val:X}"},
+            'size': {'function': lambda field: field.size, 'preprocessor': '__field__'}
+        }
+    }
+
+    file = models.FileField(default='test.txt', upload_to=make_filename)
     platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
 
     has_doomseeker = models.BooleanField(default=False)
@@ -49,6 +72,13 @@ class Build(AbstractDateTimeTrackedModel):
         verbose_name=_('date and time file was changed'),
         default=timezone.make_aware(datetime(2000, 1, 1))
     )
+
+    def get_checksum_a(self, split=True):
+        val = self.checksum_a.split('|')  # separator for checksum method
+        if split:
+            return val
+        else:
+            return val[-1]
 
     def __str__(self):
         return f"{self.platform} [{self.version}]"

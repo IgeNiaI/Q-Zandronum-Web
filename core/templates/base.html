@@ -1,7 +1,8 @@
-<!DOCTYPE html>
+<!DOCTYPE html>{% spaceless %}
 {% load static i18n sniplates %}
 {% get_current_language as LANGUAGE_CODE %}
-<html lang="{{ LANGUAGE_CODE }}">
+{% load_widgets widgets='sniplates_widgets.html' %}
+<html lang="{{ LANGUAGE_CODE }}">{% endspaceless %}
 <head>
 
     <meta charset="utf-8" />
@@ -41,16 +42,10 @@
     <footer class='alt-bg flex-grow-1 d-flex flex-column'>
         {% block footer %}<h2>Footer block not extended</h2>{% endblock %}
         <div id='links' class='container-sm d-flex justify-content-around align-items-center flex-wrap flex-grow-1'>
-            <div class='accent-item border shadow m-1'>
-                <a href='https://discord.gg'>
-                <div class='d-flex row align-items-center justify-content-start'><i class="fab fa-2x fa-discord mr-2"></i> <b>QC:DE {% trans 'discord' %}</b></div>
-                </a>
-            </div>
-            <div class='accent-item border shadow m-1'>
-                <a href='https://example.com'>
-                <div class='d-flex row align-items-center justify-content-start'><i class="fas fa-2x fa-code mr-2"></i> <b>{% trans 'source code' %}</b></div>
-                </a>
-            </div>
+            {% trans 'QC:DE Discord' as label %}
+            {% widget "widgets:link_item" label=label url='https://discord.com/invite/RN9hhmA' icon_class='discord fab' %}
+            {% trans 'Source code' as label %}
+            {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum' icon_class='github fab' %}
         </div>
 
         {% if user.is_staff %}
