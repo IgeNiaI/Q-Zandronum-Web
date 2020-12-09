@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-05 21:12+0300\n"
+"POT-Creation-Date: 2020-12-09 23:21+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,19 +20,19 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: core/models.py:11
+#: core/models.py:13
 msgid "user"
 msgstr ""
 
-#: core/models.py:12
+#: core/models.py:14
 msgid "users"
 msgstr ""
 
-#: core/models.py:20
+#: core/models.py:21
 msgid "page configuration translation"
 msgstr ""
 
-#: core/models.py:21
+#: core/models.py:22
 msgid "page configuration translations"
 msgstr ""
 
@@ -44,30 +44,49 @@ msgstr ""
 msgid "page configurations"
 msgstr ""
 
+#: core/templates/base.html:31
+msgid "Welcome to"
+msgstr "Добро пожаловать"
+
+#: core/templates/base.html:39
+msgid "A fork of Zandronum"
+msgstr "Форк Zandronum"
+
+#: core/templates/base.html:45
+msgid "QC:DE Discord"
+msgstr "QC:DE Дискорд"
+
+#: core/templates/base.html:47
+msgid "Source code"
+msgstr "Исходный код"
+
+#: core/templates/base.html:52
+msgid "Administration"
+msgstr "Администрирование"
+
 #: core/templates/index.html:22
 msgid "Downloads"
 msgstr "Загрузки"
 
-#: core/templates/index.html:31
+#: core/templates/index.html:28
 msgid "No builds is available now!"
 msgstr ""
 
-#: core/templates/z-base.html:30
-msgid "Welcome to"
-msgstr "Добро пожаловать"
+#: core/templates/sniplates_widgets.html:21
+msgid "download"
+msgstr "загрузить"
 
-#: core/templates/z-base.html:38
-msgid "A fork of Zandronum"
-msgstr "Форк Zandronum"
+#: core/templates/sniplates_widgets.html:30
+msgid "ver"
+msgstr ""
 
-#: core/templates/z-base.html:46
-msgid "discord"
-msgstr "Дискорд"
+#: core/templates/sniplates_widgets.html:35
+msgid "with doomseeker"
+msgstr "с doomseeker"
 
-#: core/templates/z-base.html:51
-msgid "source code"
-msgstr "Исходный код"
+#: core/templates/sniplates_widgets.html:37
+msgid "engine only"
+msgstr "только движок"
 
-#: core/templates/z-base.html:70
-msgid "Change"
-msgstr "Изменить"
+#~ msgid "Change"
+#~ msgstr "Изменить"
