@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.12.1-b1"
+__version__ = "0.12.1-b2"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -196,11 +196,11 @@ class LiveSettings(BaseSettings):
     DEBUG = False
 
     # NOTE: define the correct hosts in production!
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = ['http://70.35.196.63']
 
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.postgres',
+            'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'qzandronum',
         }
     }
