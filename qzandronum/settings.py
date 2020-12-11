@@ -162,7 +162,7 @@ class BaseSettings():
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
     # WARNING! Cast to Path!
-    @cbs.env
+    @cbs.env(cast=Path)
     def WEB_ROOT(self):
         """ This is not standart setting, there are different approaches to put your
             media and static files, some are confusing, I prefer to put it outside of
@@ -196,7 +196,7 @@ class LiveSettings(BaseSettings):
     DEBUG = False
 
     # NOTE: define the correct hosts in production!
-    ALLOWED_HOSTS = ['http://70.35.196.63']
+    ALLOWED_HOSTS = ['70.35.196.63']
 
     DATABASES = {
         'default': {
