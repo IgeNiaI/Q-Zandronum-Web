@@ -43,7 +43,7 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
         ]
 
     def make_filename(obj, filename):
-        parts = ['QZandronum', obj.version, obj.platform.name.lower(), obj.crc32]
+        parts = ['QZandronum', obj.version, obj.platform.name.lower()]
         ext = os.path.splitext(filename)[-1].lower()  # it has "."
         return "-".join(parts) + ext
 

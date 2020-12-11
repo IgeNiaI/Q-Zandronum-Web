@@ -37,3 +37,4 @@ class PlatformAdmin(admin.ModelAdmin):
 @admin.register(models.Build)
 class BuildAdmin(admin.ModelAdmin):
     list_display = ('platform', 'has_doomseeker', 'version', 'size', 'update_datetime')
+    readonly_fields = ('file_datetime', 'create_datetime')

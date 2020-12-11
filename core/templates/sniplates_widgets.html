@@ -17,8 +17,7 @@
 {% endblock link_item %}
 
 {% block download_item %}
-<a class='col-sm button build-item shadow hover mx-3 mb-4 p-2' href='{{ build.file.url }}'
-   title='{% trans "download" %}: {{ build.file.name }}'>
+<a class='col-sm button build-item shadow hover mx-3 mb-4 p-2' href='{{ build.file.url }}'>
     <div class='d-flex justify-content-between align-items-baseline'>
         <h5 class='text-left accent-colour'>
             {% if build.platform.icon_code %}
