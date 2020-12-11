@@ -15,6 +15,8 @@ celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git" }
 pip = ">=20.2.4"
 bleach = "^3.2"
 django-sniplates = "^0.7.0"
+uWSGI = "^2.0.19"
+psycopg2 = "^2.8.6"
 
 
 [tool.poetry.dev-dependencies]
