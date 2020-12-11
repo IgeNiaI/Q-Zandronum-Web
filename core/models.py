@@ -25,10 +25,14 @@ class TranslatedPageConfig(AbstractTranslatedModel, AbstractDateTimeTrackedModel
     base = models.ForeignKey('PageConfig',
                              on_delete=models.CASCADE,
                              related_name='translations')
+    base.help_text = _('a base model of this translation model')
 
     meta_title = models.CharField(max_length=256)
+    meta_title.help_text = _('Page title (shown on the browser tab)')
     meta_descr = models.TextField(blank=True)
+    meta_descr.help_text = _('Page description (mostly for search engines)')
     meta_keywords = models.TextField(max_length=1024, blank=True)
+    meta_keywords.help_text = _('Keywords for search engines')
 
     objects = BaseTranslatedQuerySet.as_manager()
 
@@ -40,6 +44,7 @@ class PageConfig(models.Model):
         db_table = "core_pageconfig"
 
     page_name = models.SlugField(max_length=64, unique=True)
+    page_name.help_text = _('page id for internal use, must contain only a-zA-Z0-9-_')
 
     def __str__(self):
         return f"{self.page_name} conf"

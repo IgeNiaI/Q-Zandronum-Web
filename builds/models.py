@@ -20,7 +20,11 @@ class Platform(models.Model):
 
     name = models.CharField(max_length=64, unique=True)
 
-    icon_code = models.TextField(default="<i>*</i>")
+    icon_code = models.TextField(default="", blank=True)
+    icon_code.help_text = _('not escaped and may contain html')
+
+    priority = models.SmallIntegerField(default=200)
+    priority.help_text = _('priority of item when ordering')
 
     def __str__(self):
         return self.name
@@ -63,8 +67,12 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
     has_doomseeker = models.BooleanField(default=False)
 
     size = models.PositiveBigIntegerField(default=0)
+    size.help_text = _('size in bytes')
     crc32 = models.CharField(max_length=8, blank=True)
+    crc32.help_text = _("filled automatically")
     checksum_a = models.CharField(max_length=144, blank=True)
+    checksum_a.help_text = _("filled automatically by file upload, supposed to"
+                             " use format '<method>|<hexdigest>'")
 
     version = models.CharField(max_length=255)
 
@@ -98,8 +106,11 @@ class TranslatedFeature(BleachMixin, AbstractTranslatedModel):  # , AbstractDate
     base = models.ForeignKey('Feature',
                              on_delete=models.CASCADE,
                              related_name='translations')
+    base.help_text = _('a base model of this translation model')
 
     label_code = models.CharField(max_length=2048)
+    label_code.help_text = _('may contain html, not escaped if base feature has "label_is_html"'
+                             ' checked')
 
     objects = TranslatedFeatureQuerySet.as_manager()
 
@@ -122,14 +133,22 @@ class Feature(models.Model):
         db_table = "builds_feature"
 
     internal_name = models.CharField(max_length=128, unique=True)
+    internal_name.help_text = _('name of feature for internal use. Must be unique.')
 
     priority = models.SmallIntegerField(default=200)
+    priority.help_text = _('priority of item when ordering')
 
     is_public = models.BooleanField(default=False)
+    is_public.help_text = _('show this feature on the site')
 
-    icon_code = models.TextField(default="<i>*</i>")
+    icon_code = models.TextField(default="<i></i>")
+    icon_code.help_text = _('not escaped and may contain html')
 
     label_is_html = models.BooleanField(default=False)
+    label_is_html.help_text = _(
+        'label requires marking as safe (disable escaping).'
+        ' label itself is stored in translation table'
+    )
 
     def __str__(self):
         return self.internal_name
