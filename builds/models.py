@@ -43,9 +43,9 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
         ]
 
     def make_filename(obj, filename):
-        parts = ['QZandronum', obj.version, obj.platform.name.lower()]
+        parts = ['Q-Zandronum', obj.version, obj.platform.name]
         ext = os.path.splitext(filename)[-1].lower()  # it has "."
-        return "-".join(parts) + ext
+        return " ".join(parts) + ext
 
     _file_fields_to_process = {
         'file': {

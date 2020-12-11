@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.12.1-b2"
+__version__ = "0.12.1-b3"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -179,6 +179,7 @@ class BaseSettings():
         return self.WEB_ROOT / 'media'
 
     STATIC_URL = '/static/'
+    MEDIA_URL = '/files/'
 
 
 class DevSettings(BaseSettings):
