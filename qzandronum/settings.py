@@ -197,7 +197,7 @@ class LiveSettings(BaseSettings):
     DEBUG = False
 
     # NOTE: define the correct hosts in production!
-    ALLOWED_HOSTS = ['70.35.196.63']
+    ALLOWED_HOSTS = ['70.35.196.63', 'qzandronum.com']
 
     DATABASES = {
         'default': {
