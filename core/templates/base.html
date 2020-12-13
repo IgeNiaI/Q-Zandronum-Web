@@ -72,18 +72,24 @@
             </form>
         </div>
 
+        {% now 'Y' as year %}{# used in copyright string#}
         <div class='subcolour cnt d-flex row flex-wrap justify-content-center mt-3 mx-2' id='copyrights'>
-            <span>copyright <b>2019-{% now 'Y'%} SOMEONE</b></span>
-            <span class='font-weight-light ml-2'>
+            <span>copyright <b>{% if year != '2020' %}2020-{% endif %}{{ year }}</b></span>
+            <span class='font-weight-light mx-2'>
             {% if user.is_staff %}
                 ver. <span class='font-weight-normal'>{{ PROJECT_VERSION }}</span>
             {% endif %}
-            powered by <b class='font-weight-normal'>django</b>
+            powered by
+            <b class='font-weight-normal'>
+                <a href='https://www.djangoproject.com/' target="_blank">django</a>
+            </b>
             {% if user.is_superuser %}
             {{ DJANGO_VERSION }}
             {% endif %}
             </span>
+            <span>{% trans 'icons by' %} <a href='https://fontawesome.com/' target="_blank">fontawesome</a></span>
         </div>
+        <div class='subcolour fnt-sm cnt'></div>
     </footer>
 
 </body>
