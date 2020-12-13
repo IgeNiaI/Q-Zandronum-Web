@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.12.2-b"
+version = "0.12.2"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.4"
 pre-commit = "~2"
 django-classy-settings = "^2.1"
 Django = "~3.1.3"

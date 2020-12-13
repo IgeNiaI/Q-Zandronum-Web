@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.12.2-b"
+__version__ = "0.12.2-b-1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -75,7 +75,7 @@ class BaseSettings():
 
     MIDDLEWARE = ['django.middleware.security.SecurityMiddleware',
                   'django.contrib.sessions.middleware.SessionMiddleware',
-                  # 'debug_toolbar.middleware.DebugToolbarMiddleware',
+                  'debug_toolbar.middleware.DebugToolbarMiddleware',
                   'django.middleware.locale.LocaleMiddleware',
                   'django.middleware.common.CommonMiddleware',
                   'django.middleware.csrf.CsrfViewMiddleware',

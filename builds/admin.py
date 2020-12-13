@@ -1,12 +1,17 @@
 from celestia.translation.admin import TransFormSetMixin
 # from django.conf import settings
 from django.contrib import admin
+from django.db.models import Count
+from django.template import Context, Template
+from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 
 from . import models
-
-# from django.forms import BaseModelFormSet
+from .storage import rename_files
 
 """
+from django.forms import BaseModelFormSet
+
 class TransInlineFormSet(BaseModelFormSet):
     def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
                  queryset=None, initial=None, **kwargs):
@@ -25,16 +30,58 @@ class FeatureTransInline(TransFormSetMixin, admin.TabularInline):
 
 @admin.register(models.Feature)
 class FeatureAdmin(admin.ModelAdmin):
-    list_display = ('internal_name', 'is_public', 'priority', 'label_is_html')
+    ordering = ('priority', )
+    list_display = ('internal_name', 'is_public', 'priority',
+                    'available_translations', 'label_is_html', )
     inlines = (FeatureTransInline, )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.prefetch_related('translations')
+        return qs
+
+    def available_translations(self, obj):
+        return ", ".join([x.lang_code for x in obj.translations.all()])
+
+    """
+    def icon(self, obj):
+        s = f"<div style='max-height: 2rem; max-width: 3rem;'>{ obj.icon_code }</div>"
+        return mark_safe(s)
+    icon.allow_tags = True
+    """
 
 
 @admin.register(models.Platform)
 class PlatformAdmin(admin.ModelAdmin):
-    list_display = ('name', )
+
+    ordering = ('priority', )
+    list_display = ('name', 'icon', 'priority', 'build_count')
+
+    def icon(self, obj):
+        return mark_safe(obj.icon_code)
+    icon.allow_tags = True
+
+    def build_count(self, obj):
+        return obj.build_count
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        qs = qs.annotate(build_count=Count('build'))
+        return qs
+
+    class Media:
+        js = ('https://kit.fontawesome.com/f91e3d92b2.js', )
 
 
 @admin.register(models.Build)
 class BuildAdmin(admin.ModelAdmin):
-    list_display = ('platform', 'has_doomseeker', 'version', 'size', 'update_datetime')
+
+    list_display = ('platform', 'file', 'has_doomseeker', 'version',
+                    'crc32', 'humanize_size', 'update_datetime')
     readonly_fields = ('file_datetime', 'create_datetime')
+
+    def humanize_size(self, obj):
+        return Template("{{ size|filesizeformat }}").render(Context({'size': obj.size}))
+    humanize_size.short_description = _('Size')
+    humanize_size.admin_order_field = 'size'
+    actions = (rename_files, )

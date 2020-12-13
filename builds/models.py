@@ -12,6 +12,8 @@ from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from .storage import BuildOverwriteStorage
+
 
 class Platform(models.Model):
     class Meta:
@@ -61,7 +63,9 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
         }
     }
 
-    file = models.FileField(default='test.txt', upload_to=make_filename)
+    file = models.FileField(default='test.txt',
+                            upload_to=make_filename,
+                            storage=BuildOverwriteStorage())
     platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
 
     has_doomseeker = models.BooleanField(default=False)
