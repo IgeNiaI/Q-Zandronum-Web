@@ -74,7 +74,7 @@
 
         {% now 'Y' as year %}{# used in copyright string#}
         <div class='subcolour cnt d-flex row flex-wrap justify-content-center mt-3 mx-2' id='copyrights'>
-            <span>copyright <b>{% if year != '2020' %}2020-{% endif %}{{ year }}</b></span>
+            <span>copyright <b>Evghenii Olenciuc {% if year != '2020' %}2020-{% endif %}{{ year }}</b></span>
             <span class='font-weight-light mx-2'>
             {% if user.is_staff %}
                 ver. <span class='font-weight-normal'>{{ PROJECT_VERSION }}</span>
