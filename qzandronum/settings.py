@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.12.2-b-2"
+__version__ = "0.20.1-b"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
