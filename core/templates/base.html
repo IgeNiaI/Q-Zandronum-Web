@@ -52,6 +52,7 @@
         <div class='mx-auto'><a href='{% url "admin:index" %}'>{% trans 'Administration' %}</a></div>
         {% endif %}
 
+        {% comment %}
         <div class='mx-auto mt-3'>
             <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
                 <input name="next" type="hidden" value="{{ redirect_to|default:'/' }}">
@@ -71,23 +72,29 @@
                 </div>
             </form>
         </div>
+        {% endcomment %}
 
         {% now 'Y' as year %}{# used in copyright string#}
         <div class='subcolour cnt d-flex row flex-wrap justify-content-center mt-3 mx-2' id='copyrights'>
-            <span>copyright <b>Evghenii Olenciuc {% if year != '2020' %}2020-{% endif %}{{ year }}</b></span>
-            <span class='font-weight-light mx-2'>
-            {% if user.is_staff %}
-                ver. <span class='font-weight-normal'>{{ PROJECT_VERSION }}</span>
-            {% endif %}
-            powered by
-            <b class='font-weight-normal'>
-                <a href='https://www.djangoproject.com/' target="_blank">django</a>
-            </b>
-            {% if user.is_superuser %}
-            {{ DJANGO_VERSION }}
-            {% endif %}
+            <span><i class="fas fa-copyright"></i> <b>{% if year != '2020' %}2020-{% endif %}{{ year }} Evghenii Olenciuc</b></span>
+            <span class='font-weight-light mx-1'>
+                <i class="fas fa-flag"></i>
+                {% comment %}{% trans 'icons from' %} {% endcomment %}<a href='https://fontawesome.com/' target="_blank">fontawesome</a>
             </span>
-            <span>{% trans 'icons by' %} <a href='https://fontawesome.com/' target="_blank">fontawesome</a></span>
+            <span>
+                <i class="fab fa-python"></i>
+                {% if user.is_staff %}
+                    ver. <span class='font-weight-normal'>{{ PROJECT_VERSION }}</span>
+                {% endif %}
+                powered by
+                <b class='font-weight-normal'>
+                    <a href='https://www.djangoproject.com/' target="_blank">django</a>
+                </b>
+                {% if user.is_superuser %}
+                {{ DJANGO_VERSION }}
+                {% endif %}
+
+            </span>
         </div>
         <div class='subcolour fnt-sm cnt'></div>
     </footer>

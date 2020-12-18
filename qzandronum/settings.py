@@ -181,6 +181,21 @@ class BaseSettings():
     STATIC_URL = '/static/'
     MEDIA_URL = '/files/'
 
+    LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+        },
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+            'level': 'DEBUG',
+        },
+    }
+
 
 class DevSettings(BaseSettings):
     # SECURITY WARNING: don't run with debug turned on in production!

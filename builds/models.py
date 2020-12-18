@@ -1,7 +1,7 @@
 import hashlib
-import os
 import zlib
 from datetime import datetime
+from pathlib import Path
 
 from celestia.abstract_models import (AbstractDateTimeTrackedModel,
                                       FileProcessingMixin)
@@ -46,7 +46,16 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
 
     def make_filename(obj, filename):
         parts = ['Q-Zandronum', obj.version, obj.platform.name]
-        ext = os.path.splitext(filename)[-1].lower()  # it has "."
+        path = Path(filename)
+        stem = path.stem.lower()
+        ext = path.suffix.lower()
+        # handle double and multiple extensions like .tar.gz
+        # account for cases like ".filename", skip empty parts
+        if '.' in stem:
+            if stem[0] == '.':
+                stem = stem[1:]
+            dotted_parts = [f".{i}" for i in stem.split('.')[1:] if i != '']
+            ext = "".join(dotted_parts) + ext
         return " ".join(parts) + ext
 
     _file_fields_to_process = {
@@ -58,10 +67,18 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
                 'postprocessor': lambda val: 'sha1|' + val,  # | is a separator for checksum method
                 'update_datetime_field': 'file_datetime',
             },
+            # 'checksum_a':
+            # {
+            #     'function': '/usr/bin/sha1sum',
+            #     'postprocessor': lambda val: 'sha1|' + val.split(" ")[0].strip(),
+            #     'update_datetime_field': 'file_datetime',
+            # },
             'crc32': {'function': zlib.crc32, 'postprocessor': lambda val: f"{val:X}"},
+            # 'crc32': {'function': '/usr/bin/crc32', 'attr': 'upper'},
             'size': {'function': lambda field: field.size, 'preprocessor': '__field__'}
         }
     }
+    _file_fields_to_cleanup = ('file', )
 
     file = models.FileField(default='test.txt',
                             upload_to=make_filename,
