@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.20.1-b"
+__version__ = "0.21.1-b"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -116,6 +116,7 @@ class BaseSettings():
 
     MAIN_STYLE_FILENAME = 'main'
 
+    CELESTIA_ALLOWED_NESTED_EXTS = ("tar", )
     # Database
     # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -210,6 +211,9 @@ class DevSettings(BaseSettings):
 class LiveSettings(BaseSettings):
     # DEBUG will be always False in production
     DEBUG = False
+
+    ADMINS = [('Gin', 'webmaster@doratoa.net')]
+    MANAGERS = ADMINS
 
     # NOTE: define the correct hosts in production!
     ALLOWED_HOSTS = ['qzandronum.com',

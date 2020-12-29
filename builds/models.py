@@ -8,6 +8,8 @@ from celestia.abstract_models import (AbstractDateTimeTrackedModel,
 from celestia.bleach_models import BleachMixin
 from celestia.translation.models import (AbstractTranslatedModel,
                                          BaseTranslatedQuerySet)
+from celestia.utils import split_multiple_ext
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -47,15 +49,13 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
     def make_filename(obj, filename):
         parts = ['Q-Zandronum', obj.version, obj.platform.name]
         path = Path(filename)
-        stem = path.stem.lower()
-        ext = path.suffix.lower()
         # handle double and multiple extensions like .tar.gz
-        # account for cases like ".filename", skip empty parts
-        if '.' in stem:
-            if stem[0] == '.':
-                stem = stem[1:]
-            dotted_parts = [f".{i}" for i in stem.split('.')[1:] if i != '']
-            ext = "".join(dotted_parts) + ext
+        multi_tuple = split_multiple_ext(
+            path,
+            allowed_extensions=settings.CELESTIA_ALLOWED_NESTED_EXTS
+        )
+
+        ext = "".join(multi_tuple.subexts) + multi_tuple.ext
         return " ".join(parts) + ext
 
     _file_fields_to_process = {
