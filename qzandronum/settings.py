@@ -69,6 +69,7 @@ class BaseSettings():
                       'celestia',
                       'core',
                       'builds',
+                      'chunked_upload',
                       'django.contrib.staticfiles', ]
 
     SITE_ID = 1  # needed for sites framework
@@ -181,6 +182,8 @@ class BaseSettings():
 
     STATIC_URL = '/static/'
     MEDIA_URL = '/files/'
+
+    CHUNKED_UPLOAD_PATH = 'builds_chunks/%Y-%m/'
 
     LOGGING = {
         'version': 1,

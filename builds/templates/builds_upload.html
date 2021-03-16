@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% load static i18n sniplates %}
+
+{% block head_scripts %}
+  <script src="{% static 'builds-js/jquery.js' %}"></script>
+  <script src="{% static 'builds-js/jquery.ui.widget.js' %}"></script>
+  <!-- The Iframe Transport is required for browsers without support for XHR file uploads -->
+  <script src="{% static 'builds-js/jquery.iframe-transport.js' %}"></script>
+  <!-- The basic File Upload plugin -->
+  <script src="{% static 'builds-js/jquery.fileupload.js' %}"></script>
+  <!-- Calculate md5 -->
+  <script src="{% static 'builds-js/spark-md5.js' %}"></script>
+{% endblock head_scripts %}
+
+
+{% block main %}
+<h2 class="title mt-4">
+Chunked file upload
+</h2>
+<div class="container">
+  <p class='text-center'>
+    Based on: <a href="https://github.com/juliomalegria/django-chunked-upload" target="_blank">django-chunked-upload</a>.
+  </p>
+
+  <p>
+    <i class="fas fa-info-circle accent-colour"></i>
+    {% trans "Select file to start chunked upload" %}
+  </p>
+  <input id="chunked_upload" type="file" name="the_file">
+
+  <hr />
+  <h3>{% trans "Create build from preloaded file" %}</h3>
+  <form id='buildform' class='m-2' action='.' method="POST">
+    {% csrf_token %}
+    <div id='form-inputs'>
+    {{ form.as_p }}
+    </div>
+    <button type='submit'>{% trans 'Create' %}</button>
+  </form>
+  <hr />
+
+  <p id="progress" class='accent-colour'></p>
+  <div id="message-box" class='p-4'>
+  <p>Select or drag file to input above to start upload immediately.</p>
+  </div>
+
+    <div>
+        <p>Latests uploads</p>
+        <ul>
+        {% for upload in uploads %}
+            <li>{{ upload.filename }}  [<span class='accent-colour'>{{ upload.completed_on }}</span>]</li>
+        {% endfor %}
+        </ul>
+    </div>
+</div>
+
+  <script type="text/javascript">
+    var CHUNK_SIZE = 768*1024;
+
+    var md5 = "",
+        csrf = $("input[name='csrfmiddlewaretoken']")[0].value,
+        form_data = [{"name": "csrfmiddlewaretoken", "value": csrf}];
+
+    function append_message(text, selector='#message-box')
+    {
+        var el = $(selector);
+        el.append($('<p>').text(text));
+        el.scrollTop(el.height());
+    };
+
+    function calculate_md5(file, chunk_size) {
+      console.log('calculate_md5(), chunk size: ' + chunk_size);
+      var slice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice,
+          chunks = Math.ceil(file.size / chunk_size),
+          current_chunk = 0,
+          spark = new SparkMD5.ArrayBuffer();
+      function onload(e) {
+        spark.append(e.target.result);  // append chunk
+        current_chunk++;
+        if (current_chunk < chunks) {
+          read_next_chunk();
+        } else {
+          md5 = spark.end();
+          console.log(md5)
+        }
+      };
+      function read_next_chunk() {
+        var reader = new FileReader();
+        reader.onload = onload;
+        var start = current_chunk * chunk_size,
+            end = Math.min(start + chunk_size, file.size);
+        reader.readAsArrayBuffer(slice.call(file, start, end));
+      };
+      read_next_chunk();
+    }
+    $("#chunked_upload").fileupload({
+      url: "{% url 'api_chunked_upload' %}",
+      dataType: "json",
+      maxChunkSize: CHUNK_SIZE, // Chunks of 100 kB
+      formData: form_data,
+      add: function(e, data) { // Called before starting upload
+        $("#messages").empty();
+        // If this is the second file you're uploading we need to remove the
+        // old upload_id and just keep the csrftoken (which is always first).
+        form_data.splice(1);
+        calculate_md5(data.files[0], CHUNK_SIZE);  // Again, chunks of 100 kB
+        console.log("submit data");
+        data.submit();
+      },
+      chunkdone: function (e, data)
+      {
+        // Called after uploading each chunk
+        if (form_data.length < 2) {
+          form_data.push(
+            {"name": "upload_id", "value": data.result.upload_id}
+          );
+        }
+//         $("#messages").append($('<p>').text());
+        append_message(JSON.stringify(data.result));
+        var progress = parseInt(data.loaded / data.total * 50.0, 10);
+        var progess_item = '<i class="fas fa-square"></i>';
+        $("#progress").html(Array(progress).join(progess_item) + " " + progress*2 + "%");
+      },
+      done: function (e, data) // Called when the file has completely uploaded
+      {
+        var upload_id = data.result.upload_id;
+        console.log('upload done');
+        $.ajax({
+          type: "POST",
+          url: "{% url 'api_chunked_upload_complete' %}",
+          data:
+          {
+            csrfmiddlewaretoken: csrf,
+            upload_id: data.result.upload_id,
+            md5: md5
+          },
+          dataType: "json",
+          error: function(data)
+          {
+            console.log("async error");
+            append_message("Error:" + JSON.stringify(data));
+          },
+          success: function(data)
+          {
+            append_message(JSON.stringify(data));
+            $.ajax(
+            {
+                type: "GET",
+                url: $("buildform").attr('action'),
+                data: {upload_id: upload_id},
+                success: function(data)
+                {
+                    if (data.status == 'OK')
+                    {
+                        $("#form-inputs").html(data.form);
+                        append_message("Loaded initialized form for this upload");
+                    }
+                    else
+                    {
+                        alert(data.message);
+                    }
+                }
+            });
+          }
+        });
+        // request initialized form
+
+      },
+    });
+  </script>
+
+{% endblock main %}

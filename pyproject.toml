@@ -17,6 +17,7 @@ bleach = "^3.2"
 django-sniplates = "^0.7.0"
 uWSGI = "^2.0.19"
 psycopg2 = "^2.8.6"
+django-chunked-upload = "^2.0.0"
 
 
 [tool.poetry.dev-dependencies]

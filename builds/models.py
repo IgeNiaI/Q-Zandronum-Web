@@ -9,12 +9,18 @@ from celestia.bleach_models import BleachMixin
 from celestia.translation.models import (AbstractTranslatedModel,
                                          BaseTranslatedQuerySet)
 from celestia.utils import split_multiple_ext
+from chunked_upload.models import ChunkedUpload
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from .storage import BuildOverwriteStorage
+
+# 'ChunkedUpload' class provides almost everything for you.
+# if you need to tweak it little further, create a model class
+# by inheriting "chunked_upload.models.AbstractChunkedUpload" class
+ChunkedUploadItem = ChunkedUpload
 
 
 class Platform(models.Model):
@@ -80,8 +86,7 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
     }
     _file_fields_to_cleanup = ('file', )
 
-    file = models.FileField(default='test.txt',
-                            upload_to=make_filename,
+    file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())
     platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
 

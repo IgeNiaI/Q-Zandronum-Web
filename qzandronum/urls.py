@@ -20,6 +20,7 @@ from django.urls import include, path
 
 urlpatterns = i18n_patterns(
         path('', include('core.urls')),
+        path('builds/', include('builds.urls')),
         path('i18n/', include('django.conf.urls.i18n')),
 )
 
