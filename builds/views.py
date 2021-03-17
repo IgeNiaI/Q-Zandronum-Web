@@ -1,5 +1,6 @@
 import re
 from pathlib import Path
+from shutil import disk_usage
 
 from celestia.view_container import ViewContainer, register_view
 from chunked_upload.constants import COMPLETE as COMPLETE_CHOICE
@@ -117,6 +118,7 @@ class ChunkedUploadFormView(CreateView):
         context = super().get_context_data(**kwargs)
         builds = Build.objects.select_related('platform').order_by('platform', 'has_doomseeker')
         context['builds'] = builds
+        context['disk_usage'] = disk_usage(settings.MEDIA_ROOT)
         context['uploads'] = ChunkedUploadItem.objects.all().order_by('completed_on')[:7]
         return context
 

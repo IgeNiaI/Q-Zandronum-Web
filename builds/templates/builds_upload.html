@@ -44,6 +44,11 @@ Chunked file upload
     </ul>
     {% endif %}
   <p><i class="fas fa-upload accent-colour fa-lg"></i> <input id="chunked_upload" type="file" name="the_file"></p>
+  <div class='text-center fnt-sm'>
+    <i class="fas fa-hdd fa-lg accent-colour"></i>
+    {{ disk_usage.free|filesizeformat }} / {{ disk_usage.total|filesizeformat }}
+    {% trans "on" %} MEDIA_ROOT
+  </div>
 
   <hr />
   <h3>{% trans "Create build from preloaded file" %}</h3>
@@ -121,14 +126,27 @@ Chunked file upload
       maxChunkSize: CHUNK_SIZE, // Chunks of given size
       formData: form_data,
       add: function(e, data) { // Called before starting upload
-        $("#messages").empty();
+        $("#message-box").empty();
         // If this is the second file you're uploading we need to remove the
         // old upload_id and just keep the csrftoken (which is always first).
         form_data.splice(1);
         calculate_md5(data.files[0], CHUNK_SIZE);  // Again, chunks of given size
-        console.log("submit data");
         data.submit();
       },
+      /*
+      chunksend: function (e, data)
+      {
+        console.log('send chunk');
+      },
+      chunkalways: function (e, data)
+      {
+        console.log('chunk always');
+      },
+      always: function (e, data)
+      {
+        console.log('always');
+      },
+      */
       chunkdone: function (e, data)
       {
         // Called after uploading each chunk
@@ -187,6 +205,15 @@ Chunked file upload
         // request initialized form
 
       },
+      fail: function (e, data)
+      {
+        var message;
+        console.log("fail callback triggered" + data.textStatus + ": " + data.errorThrown);
+        message = "[" + data.jqXHR.status + "] " + data.errorThrown;
+        message = message + ": " + data.jqXHR.responseJSON.detail;
+        alert(message);
+        append_message(message);
+      }
     });
   </script>
 
