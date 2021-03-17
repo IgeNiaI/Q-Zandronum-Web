@@ -1,3 +1,4 @@
+import re
 from pathlib import Path
 
 from celestia.view_container import ViewContainer, register_view
@@ -6,13 +7,13 @@ from chunked_upload.views import \
     ChunkedUploadCompleteView as DefaultChunkedUploadCompleteView
 from chunked_upload.views import ChunkedUploadView
 from django.conf import settings
+from django.contrib import messages
 from django.db import transaction
 from django.http import HttpResponseRedirect, JsonResponse
-# from io import BytesIO
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 
-from builds.models import Build
+from builds.models import Build, Platform
 
 from .forms import BuildPreloadedForm
 from .models import ChunkedUploadItem
@@ -26,6 +27,10 @@ class ChunkedUploadFormView(CreateView):
     model = Build
     form_class = BuildPreloadedForm
     success_url = reverse_lazy("chunked_upload")
+    version_pattern = re.compile(
+        r"(?P<version>\d+\.\d+(\.\d+)*(\-)?(b|a|rc|beta|alpha)?(\-)?\d+)",
+        flags=re.IGNORECASE
+    )
 
     def get(self, request, *args, **kwargs):
         # WARNING TODO is_ajax is depricated in 3.1, update
@@ -50,8 +55,9 @@ class ChunkedUploadFormView(CreateView):
                                     status=404)
             else:
                 # return form html snippet with initial value
-                print(f" >> {upload_item}")
-                form = self.form_class(initial={'upload': upload_item})
+                initial = self.parse_filename(upload_item.filename)
+                initial['upload'] = upload_item
+                form = self.form_class(initial=initial)
                 return JsonResponse({'status': 'OK',
                                      'form': form.as_p(),
                                      'message': "loaded initialized form"},
@@ -63,6 +69,19 @@ class ChunkedUploadFormView(CreateView):
         # this case should never be reached
         return JsonResponse({'status': False, 'message': "unhandled view case (server coding error)"},
                             status=520)
+
+    def parse_filename(self, filename):
+        """ try to parse data from the file name for form pre-fill """
+        initial = {}
+        platforms = Platform.objects.order_by('name').defer('icon_code')
+        for platform in platforms:
+            if re.search(platform.name, filename, re.IGNORECASE):
+                initial['platform'] = platform
+                break
+        m = re.search(self.version_pattern, filename)
+        if m:
+            initial['version'] = m.group('version')
+        return initial
 
     def form_valid(self, form):
 
@@ -82,6 +101,8 @@ class ChunkedUploadFormView(CreateView):
                 build.file = filename
                 build.save()
                 upload_item.delete()
+            msg = f"Build #{build.pk} '{filename}' saved."
+            messages.add_message(self.request, messages.SUCCESS, msg)
 
         except Exception as exc:
             # cleanup

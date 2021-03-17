@@ -22,17 +22,39 @@ Chunked file upload
     Based on: <a href="https://github.com/juliomalegria/django-chunked-upload" target="_blank">django-chunked-upload</a>.
   </p>
 
-  <p>
-    <i class="fas fa-info-circle accent-colour"></i>
-    {% trans "Select file to start chunked upload" %}
-  </p>
-  <input id="chunked_upload" type="file" name="the_file">
+  <div>
+    <p><i class="fas fa-info-circle accent-colour"></i> {% trans "How to use" %}</p>
+    <ol>
+        <li>{% trans "Select file to start chunked upload" %}</li>
+        <li>{% trans "When chunked upload is finished, form below is updated" %}
+        <li>{% trans "Complete and submit the form to create a build" %}</li>
+    </ol>
+  </div>
+  <hr />
+    {% if messages %}
+    <ul class="messages text-center">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+            {{ message }}
+            {% if message.tags == "success" %}
+            &nbsp;<i class="fas fa-check fa-2x success-colour"></i>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+  <p><i class="fas fa-upload accent-colour fa-lg"></i> <input id="chunked_upload" type="file" name="the_file"></p>
 
   <hr />
   <h3>{% trans "Create build from preloaded file" %}</h3>
   <form id='buildform' class='m-2' action='.' method="POST">
     {% csrf_token %}
     <div id='form-inputs'>
+    {% if form.errors %}
+    <p class='accent-colour'>
+        <i class="fas fa-exclamation-triangle"></i> {% trans "Form errors!" %}
+    </p>
+    {% endif %}
     {{ form.as_p }}
     </div>
     <button type='submit'>{% trans 'Create' %}</button>
@@ -96,14 +118,14 @@ Chunked file upload
     $("#chunked_upload").fileupload({
       url: "{% url 'api_chunked_upload' %}",
       dataType: "json",
-      maxChunkSize: CHUNK_SIZE, // Chunks of 100 kB
+      maxChunkSize: CHUNK_SIZE, // Chunks of given size
       formData: form_data,
       add: function(e, data) { // Called before starting upload
         $("#messages").empty();
         // If this is the second file you're uploading we need to remove the
         // old upload_id and just keep the csrftoken (which is always first).
         form_data.splice(1);
-        calculate_md5(data.files[0], CHUNK_SIZE);  // Again, chunks of 100 kB
+        calculate_md5(data.files[0], CHUNK_SIZE);  // Again, chunks of given size
         console.log("submit data");
         data.submit();
       },
@@ -115,7 +137,6 @@ Chunked file upload
             {"name": "upload_id", "value": data.result.upload_id}
           );
         }
-//         $("#messages").append($('<p>').text());
         append_message(JSON.stringify(data.result));
         var progress = parseInt(data.loaded / data.total * 50.0, 10);
         var progess_item = '<i class="fas fa-square"></i>';
