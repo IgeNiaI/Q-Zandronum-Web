@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-09 23:21+0300\n"
+"POT-Creation-Date: 2021-03-17 12:05+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,38 +20,123 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: builds/models.py:17
+#: builds/admin.py:85
+msgid "Size"
+msgstr ""
+
+#: builds/models.py:28
 msgid "platform"
 msgstr ""
 
-#: builds/models.py:18
+#: builds/models.py:29
 msgid "platforms"
 msgstr ""
 
-#: builds/models.py:30
+#: builds/models.py:34 builds/models.py:171
+msgid "not escaped and may contain html"
+msgstr ""
+
+#: builds/models.py:37 builds/models.py:165
+msgid "priority of item when ordering"
+msgstr ""
+
+#: builds/models.py:45
 msgid "build"
 msgstr ""
 
-#: builds/models.py:31
+#: builds/models.py:46
 msgid "builds"
 msgstr ""
 
-#: builds/models.py:71
+#: builds/models.py:96
+msgid "size in bytes"
+msgstr ""
+
+#: builds/models.py:98
+msgid "filled automatically"
+msgstr ""
+
+#: builds/models.py:100
+msgid ""
+"filled automatically by file upload, supposed to use format '<method>|"
+"<hexdigest>'"
+msgstr ""
+
+#: builds/models.py:106
 msgid "date and time file was changed"
 msgstr ""
 
-#: builds/models.py:93
+#: builds/models.py:128
 msgid "feature translation"
 msgstr ""
 
-#: builds/models.py:94
+#: builds/models.py:129
 msgid "feature translations"
 msgstr ""
 
-#: builds/models.py:119
+#: builds/models.py:135
+msgid "a base model of this translation model"
+msgstr ""
+
+#: builds/models.py:138
+msgid ""
+"may contain html, not escaped if base feature has \"label_is_html\" checked"
+msgstr ""
+
+#: builds/models.py:157
 msgid "feature"
 msgstr ""
 
-#: builds/models.py:120
+#: builds/models.py:158
 msgid "features"
+msgstr ""
+
+#: builds/models.py:162
+msgid "name of feature for internal use. Must be unique."
+msgstr ""
+
+#: builds/models.py:168
+msgid "show this feature on the site"
+msgstr ""
+
+#: builds/models.py:175
+msgid ""
+"label requires marking as safe (disable escaping). label itself is stored in "
+"translation table"
+msgstr ""
+
+#: builds/storage.py:47
+msgid "auto-rename build files"
+msgstr ""
+
+#: builds/templates/builds_upload.html:26
+msgid "How to use"
+msgstr ""
+
+#: builds/templates/builds_upload.html:28
+msgid "Select file to start chunked upload"
+msgstr ""
+
+#: builds/templates/builds_upload.html:29
+msgid "When chunked upload is finished, form below is updated"
+msgstr ""
+
+#: builds/templates/builds_upload.html:30
+msgid "Complete and submit the form to create a build"
+msgstr ""
+
+#: builds/templates/builds_upload.html:50
+msgid "on"
+msgstr ""
+
+#: builds/templates/builds_upload.html:54
+msgid "Create build from preloaded file"
+msgstr ""
+
+#: builds/templates/builds_upload.html:60
+msgid "Form errors!"
+msgstr ""
+
+#: builds/templates/builds_upload.html:65
+msgid "Create"
 msgstr ""
