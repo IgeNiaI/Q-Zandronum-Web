@@ -84,4 +84,13 @@ class BuildAdmin(admin.ModelAdmin):
         return Template("{{ size|filesizeformat }}").render(Context({'size': obj.size}))
     humanize_size.short_description = _('Size')
     humanize_size.admin_order_field = 'size'
-    actions = (rename_files, )
+
+    def delete_with_files(modeladmin, request, queryset):
+        """ run delete on every instance to trigger custom code for
+            file cleanup.
+        """
+        for obj in queryset:
+            obj.delete()
+    delete_with_files.short_description = _("Delete with files")
+
+    actions = (rename_files, delete_with_files)

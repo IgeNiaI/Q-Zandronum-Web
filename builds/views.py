@@ -100,6 +100,16 @@ class ChunkedUploadFormView(CreateView):
                 file_moved = True
 
                 build.file = filename
+
+                # try to get existing build for platform and option
+                if not form.cleaned_data['create']:
+                    old_builds = Build.objects.filter(
+                        platform=build.platform,
+                        has_doomseeker=build.has_doomseeker
+                    ).order_by('version')[:1]
+                    if len(old_builds):
+                        build.pk = old_builds[0].pk
+
                 build.save()
                 upload_item.delete()
             msg = f"Build #{build.pk} '{filename}' saved."

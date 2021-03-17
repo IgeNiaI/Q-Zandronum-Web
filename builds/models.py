@@ -17,10 +17,14 @@ from django.utils.translation import gettext_lazy as _
 
 from .storage import BuildOverwriteStorage
 
-# 'ChunkedUpload' class provides almost everything for you.
-# if you need to tweak it little further, create a model class
-# by inheriting "chunked_upload.models.AbstractChunkedUpload" class
-ChunkedUploadItem = ChunkedUpload
+
+class ChunkedUploadItem(ChunkedUpload):
+    """ a proxy to default ChunkedUpload """
+    class Meta:
+        proxy = True
+
+    def __str__(self):
+        return f'{self.filename} #{self.upload_id} ({self.get_status_display()})'
 
 
 class Platform(models.Model):
@@ -116,6 +120,11 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
 
     def __str__(self):
         return f"{self.platform} [{self.version}]"
+
+    def delete(self, *args, **kwargs):
+        """ remove file before removing instance """
+        self.file.delete(save=False)
+        return super().delete(*args, **kwargs)
 
 
 class TranslatedFeatureQuerySet(BaseTranslatedQuerySet):

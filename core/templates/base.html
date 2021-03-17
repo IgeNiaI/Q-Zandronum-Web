@@ -68,7 +68,10 @@
         </div>
 
         {% if user.is_staff %}
-        <div class='mx-auto'><a href='{% url "admin:index" %}'>{% trans 'Administration' %}</a></div>
+        <div class='mx-auto'>
+            <a href='{% url "admin:index" %}'>{% trans 'Administration' %}</a> -
+            <a href='{% url "chunked_upload" %}'>{% trans "Build upload" %}</a>
+        </div>
         {% endif %}
 
         {% comment %}
