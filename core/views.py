@@ -46,7 +46,7 @@ class IndexView(PageConfigMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        builds = Build.objects.select_related('platform').order_by('platform', 'has_doomseeker')
+        builds = Build.objects.select_related('platform').order_by('platform__priority', 'has_doomseeker')
         context['builds'] = builds
         context['page_config'] = self.get_page_config()
         return context
