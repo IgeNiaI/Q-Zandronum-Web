@@ -1,0 +1,176 @@
+<!DOCTYPE html>{% spaceless %}
+{% load static i18n sniplates %}
+{% get_current_language as LANGUAGE_CODE %}
+<html lang="{{ LANGUAGE_CODE }}">{% endspaceless %}
+<head>
+
+    <meta charset="utf-8" />
+    <meta name="document-state" content="dynamic" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="keywords" content="{% spaceless %}{% block keywords %}{{ page_config.meta_keywords }}{% endblock %}{% endspaceless %}" />
+    <meta name="description" content="{% block description %}{% spaceless %}{{ page_config.meta_descr }}
+        {% endspaceless %}{% endblock description %}" />
+    <link type="image/x-icon" rel="shortcut icon" href="{% static 'favicon.png' %}" />
+    <link rel="icon" sizes="256x256" type="image/png" href="{% static 'favicon.png' %}" />
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'qzandronum-apple-x180.png' %}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <link rel="stylesheet"  href="{% static 'main.css' %}" />
+    <title>{% block pagetitle %}{{ page_config.meta_title|default:"New site" }}{% endblock %}</title>
+    {% block head_extra %}{% endblock %}
+    {% block head_scripts %}{% endblock %}
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script async defer src="https://kit.fontawesome.com/f91e3d92b2.js" crossorigin="anonymous"></script>
+    <style>
+        #ytplayer
+        {
+            z-index: -1;
+            position: absolute;
+            top: 0px;
+            left: calc(50% - 960px);
+        }
+        .veil
+        {
+            width: 100%;
+            height: 1080px;
+            background: rgba(0,0,0,0.5);
+            position: relative;
+            color: var(--light);
+            overflow-x: hidden;
+        }
+        .text-box
+        {
+            width: 100%;
+            height: 90vh;
+        }
+        body
+        {
+            background: black;
+        }
+        nav
+        {
+            color: var(--light);
+            background: black;
+            padding: 0 50px;
+        }
+        nav a
+        {
+            color: var(--light);
+        }
+        .video-width
+        {
+            max-width: 1920px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .flex-grow
+        {
+            flex-grow: 1;
+        }
+
+
+    </style>
+</head>
+
+<body {% block body_attrs %}class='d-flex flex-column'{% endblock body_attrs %}>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class='video-width d-flex flex-grow'>
+            <a class="navbar-brand" href="#">Navbar</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+                <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Discord</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">ModDB</a>
+                </li>
+            </div>
+        </div>
+    </nav>
+
+        <div class='veil'>
+            <div class='d-flex align-items-center justify-content-center text-box'>
+                <div class="flex-row">
+                    <div class='col'>
+                        <h1 class='display-1 text-center'>{% lorem 3 w %}</h1>
+                    </div>
+                    <div class='col'>
+                        <p class='text-center'>{% lorem 9 w random %}.</p>
+                    </div>
+                    <div class='col text-center'>
+                        <button type="button" class="btn btn-danger display-3">Join Discord</button>
+                    </div>
+                    <div id='ytplayer'></div>
+                    {% comment %}
+                    <iframe width="100%" height="100%"
+                            class='ytplayer'
+                            src="https://www.youtube.com/embed/57C50XKaxP0/?&autoplay=1&loop=1&controls=0&showinfo=0&autohide=1"
+
+                            title="YouTube video player" frameborder="0"
+                            allow="autoplay;  encrypted-media;" allowfullscreen>
+                    </iframe>
+                    {% endcomment %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>
+    </script>
+    {% comment %}{% localize off %}{% endcomment %}
+    {% block document_end %}
+    <script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      //var tag = document.createElement('script');
+
+      //tag.src = "https://www.youtube.com/iframe_api";
+      //var firstScriptTag = document.getElementsByTagName('script')[0];
+      //firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady()
+      {
+        player = new YT.Player('ytplayer',
+        {
+          height: '1080',
+          width: '1920',
+          videoId: '57C50XKaxP0',
+          playerVars: {
+            //'playsinline': 1,
+            'loop': 1,
+            //'enablejsapi': 1,
+            'autoplay': 1,
+            controls: 0, // Show pause/play buttons in player
+            showinfo: 0, // Hide the video title
+            fs: 0,
+          },
+          events: {
+            'onReady': onPlayerReady,
+            'onError' : function(event)
+            {
+                console.error('player_api', event);
+            }
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event)
+      {
+        event.target.mute();
+        event.target.playVideo();
+        console.log("Start playback");
+      }
+    </script>
+    {% endblock document_end %}
+    {% comment %}{% endlocalize %}{% endcomment %}
+</html>
