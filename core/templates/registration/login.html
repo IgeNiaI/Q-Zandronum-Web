@@ -1,0 +1,19 @@
+{% extends "base_qz.html" %}
+
+{% block main %}
+    <div class="container d-flex flex-grow-1 align-items-center justify-content-around">
+    <form method='POST'>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class='d-flex justify-content-center'><button class='btn btn-primary' type='submit'>Log in</button></div>
+    </form>
+    </div>
+{% endblock main %}
+
+{% block top_header %}
+<h1 class="title mt-4">
+    Login
+</h1>
+{% endblock top_header %}
+
+{% block footer %}{% endblock %}
