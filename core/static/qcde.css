@@ -19,7 +19,7 @@ main
     background: rgba(0,0,0,0.5);
     background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.35) 25%, rgba(0,0,0,0.35) 90%, rgba(0,0,0,1) 100%);
     position: absolute;
-    margin-top: var(--nav-height);
+    top: var(--nav-height);
 
     height: calc(100vh - var(--nav-height) - var(--footnote-height));
 
@@ -32,7 +32,7 @@ main
 .h720 #ytplayer
 {
     left: calc(50% - 640px);
-    //bottom: calc(720px - 100vh);
+/*     bottom: calc(720px - 100vh); */
 }
 .h1080 > .veil
 {
@@ -41,7 +41,7 @@ main
 .h1080 #ytplayer
 {
     left: calc(50% - 960px);
-    //bottom: calc(1080px - 100vh);
+/*     bottom: calc(1080px - 100vh); */
 }
 
 #videoTopContaier
@@ -71,15 +71,6 @@ nav
 .navbar
 {
     --bs-navbar-padding-x: 1rem;
-    /*--bs-navbar-color: var(--bs-light);
-    --bs-navbar-hover-color: rgba(255, 255, 255, 0.7);
-    --bs-navbar-disabled-color: rgba(0, 0, 0, 0.3);
-    --bs-navbar-active-color: rgba(0, 0, 0, 0.9);
-    --bs-navbar-brand-padding-y: 0.4rem;
-    --bs-navbar-brand-margin-end: 2rem;
-    --bs-navbar-brand-font-size: 1.25rem;
-    --bs-navbar-brand-color:  var(--bs-light);
-    --bs-navbar-brand-hover-color: rgba(255, 255, 255, 0.7);*/
     --bs-navbar-toggler-icon-bg: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.65%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 .navbar-nav

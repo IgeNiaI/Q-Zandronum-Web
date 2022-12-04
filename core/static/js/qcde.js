@@ -1,5 +1,4 @@
 var player;  // Youtube player object
-var video_id = '57C50XKaxP0';  // video ID, change it to replace video
 
 function resizeHandle(event)
 {
