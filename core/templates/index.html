@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_qz.html" %}
 {% load static i18n sniplates %}
 
 {% block main %}
@@ -16,3 +16,28 @@
         </div>
     </div>
 {% endblock main %}
+
+{% block footer %} {% load_widgets widgets='sniplates_widgets.html' %}
+<h2 class='mb-3'>{% trans 'Downloads' %}</h2>
+<div id="downloads" class="container flex-grow-2">
+    <div class='d-flex row justify-content-around'>
+    {% for build in builds %}
+        {% widget "widgets:download_item" build=build %}
+    {% empty %}
+        <div class='col-md'>{% trans 'No builds is available now!' %}</div>
+    {% endfor %}
+    </div>
+</div>
+
+
+<div id='links' class='container-sm d-flex justify-content-around align-items-center flex-wrap flex-grow-1'>
+    {% trans 'QC:DE Discord' as label %}
+    {% widget "widgets:link_item" label=label url='https://discord.com/invite/RN9hhmA' icon_class='discord fab' %}
+    {% trans 'Project Wiki' as label %}
+    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum/wiki' icon_class='atlas fas' %}
+    {% trans 'Issue tracker' as label %}
+    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum/issues' icon_class='bug fas' %}
+    {% trans 'Source code' as label %}
+    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum' icon_class='github fab' %}
+</div>
+{% endblock footer %}

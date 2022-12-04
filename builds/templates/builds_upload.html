@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base_qz.html" %}
 {% load static i18n sniplates %}
 
 {% block head_scripts %}
@@ -12,15 +12,28 @@
   <script src="{% static 'builds-js/spark-md5.js' %}"></script>
 {% endblock head_scripts %}
 
+{% block top_header %}
+<h1 class="title mt-4">
+  <span>
+  {% if view.codename == "qz_upload" %}Q-Zandronum
+  {% elif view.codename == "qcde_upload" %}QC:DE
+  {% else %} ???
+  {% endif %}
+  </span>
+  chunked file upload
+</h1>
+{% endblock top_header %}
 
 {% block main %}
-<h2 class="title mt-4">
-Chunked file upload
-</h2>
+
 <div class="container">
   <p class='text-center'>
     Based on: <a href="https://github.com/juliomalegria/django-chunked-upload" target="_blank">django-chunked-upload</a>.
   </p>
+  <div class='d-flex justify-content-center'>
+    <a class='btn mx-1 {% if view.codename == "qz_upload" %}btn-primary{% else %}btn-secondary{% endif %}' href='{% url "chunked_upload" %}'>Q-Zandronum Upload</a>
+    <a class='btn mx-1 btn {% if view.codename == "qcde_upload" %}btn-primary{% else %}btn-secondary{% endif %}' href='{% url "qcde_chunked_upload" %}'>QC:DE Upload</a>
+  </div>
 
   <div>
     <p><i class="fas fa-info-circle accent-colour"></i> {% trans "How to use" %}</p>
@@ -218,3 +231,5 @@ Chunked file upload
   </script>
 
 {% endblock main %}
+
+{% block footer %}{% endblock %}

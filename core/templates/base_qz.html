@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static i18n %}
+
+{% block body_to_footer %}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+<main class='py-4 px-0 flex-grow-1 d-flex flex-column'>
+    {% block top_header %}
+    <h1 class="d-flex flex-row flex-wrap justify-content-center">
+        {% spaceless %}
+            <span>Welcome to&nbsp;</span>
+            <b class='accent-colour q-icon'>Q</b>
+            <span><span class='q-mobile'>Q</span><span>-Zandronum!</span></span>
+        {% endspaceless %}
+    </h1>
+    <h2 class='accent-colour' style='font-size: 1.3rem'>{% trans 'A fork of Zandronum' %}</h2>
+    {% endblock top_header %}
+    {% block main %}<h2>Main block not extended</h2>{% endblock %}
+</main>
+{% endblock body_to_footer %}
