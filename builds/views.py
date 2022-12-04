@@ -4,41 +4,49 @@ from shutil import disk_usage
 
 from celestia.view_container import ViewContainer, register_view
 from chunked_upload.constants import COMPLETE as COMPLETE_CHOICE
-from chunked_upload.views import \
-    ChunkedUploadCompleteView as DefaultChunkedUploadCompleteView
+from chunked_upload.views import ChunkedUploadCompleteView as DefaultChunkedUploadCompleteView
 from chunked_upload.views import ChunkedUploadView
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
 from django.http import HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
 
-from builds.models import Build, Platform
+from builds.models import Build, Platform, QCDEBuild
 
-from .forms import BuildPreloadedForm
+from .forms import BuildPreloadedForm, QCDEBuildPreloadedForm
 from .models import ChunkedUploadItem
 
 views = ViewContainer()
 
 
 @register_view(views)
-class ChunkedUploadFormView(CreateView):
+class ChunkedUploadFormView(LoginRequiredMixin, CreateView):
     template_name = 'builds_upload.html'
     model = Build
     form_class = BuildPreloadedForm
+    codename = "qz_upload"
     success_url = reverse_lazy("chunked_upload")
     version_pattern = re.compile(
         r"(?P<version>\d+\.\d+(\.\d+)*(\-)?(b|a|rc|beta|alpha)?(\-)?\d+)",
         flags=re.IGNORECASE
     )
+    ordering = ('platform__priority', 'has_doomseeker')
 
     def get(self, request, *args, **kwargs):
-        # WARNING TODO is_ajax is depricated in 3.1, update
-        if request.is_ajax():
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
             return self.get_form_for_upload(request)
         else:
             return super().get(request, *args, **kwargs)
+
+    def get_old_builds(self, build):
+        old_builds = self.model.objects.filter(
+            platform=build.platform,
+            has_doomseeker=build.has_doomseeker
+        )
+        return old_builds.order_by('version')[:1]
 
     def get_form_for_upload(self, request):
         """ returns form html snippet for replacement in JSON or
@@ -95,18 +103,18 @@ class ChunkedUploadFormView(CreateView):
 
             with transaction.atomic():
                 new_path = Path(settings.MEDIA_ROOT) / filename
-                print(f"new path: {new_path}")
+                new_path.parent.mkdir(mode=0o775, parents=True, exist_ok=True)
+
+                print(f"new path: {new_path} ({filename})")
+                print(f"{upload_item.file.path}")
                 Path(upload_item.file.path).rename(new_path)
                 file_moved = True
 
-                build.file = filename
+                build.file = str(filename)
 
                 # try to get existing build for platform and option
                 if not form.cleaned_data['create']:
-                    old_builds = Build.objects.filter(
-                        platform=build.platform,
-                        has_doomseeker=build.has_doomseeker
-                    ).order_by('version')[:1]
+                    old_builds = self.get_old_builds(build)
                     if len(old_builds):
                         build.pk = old_builds[0].pk
 
@@ -126,15 +134,30 @@ class ChunkedUploadFormView(CreateView):
     def get_context_data(self, **kwargs):
         """ adds builds for footer and latests uploads """
         context = super().get_context_data(**kwargs)
-        builds = Build.objects.select_related('platform').order_by('platform__priority', 'has_doomseeker')
+        builds = self.model.objects.select_related('platform').order_by(*self.ordering)
         context['builds'] = builds
         context['disk_usage'] = disk_usage(settings.MEDIA_ROOT)
         context['uploads'] = ChunkedUploadItem.objects.all().order_by('completed_on')[:7]
         return context
 
 
+@register_view(views, function_name="qcde_chunked_upload")
+class QCDEChunkedUploadView(ChunkedUploadFormView):
+    model = QCDEBuild
+    form_class = QCDEBuildPreloadedForm
+    codename = "qcde_upload"
+    success_url = reverse_lazy("qcde_chunked_upload")
+    ordering = ("version", )
+
+    def get_old_builds(self, build):
+        old_builds = self.model.objects.filter(
+            platform=build.platform,
+        )
+        return old_builds.order_by('version')[:1]
+
+
 @register_view(views)
-class ChunkedUploadProcessView(ChunkedUploadView):
+class ChunkedUploadProcessView(LoginRequiredMixin, ChunkedUploadView):
 
     model = ChunkedUploadItem
     field_name = 'the_file'
@@ -147,13 +170,12 @@ class ChunkedUploadProcessView(ChunkedUploadView):
         # chunked_upload = self.model(**attrs)
         # file starts empty
         # chunked_upload.file.save(name='', content=ContentFile(''), save=save)
-        print(f"create_chunked_upload: {save}")
+        # print(f"create_chunked_upload: {save}")
         return super().create_chunked_upload(save, **attrs)
 
 
 @register_view(views)
 class ChunkedUploadCompleteView(DefaultChunkedUploadCompleteView):
-
     model = ChunkedUploadItem
 
     def on_completion(self, uploaded_file, request):
@@ -162,7 +184,7 @@ class ChunkedUploadCompleteView(DefaultChunkedUploadCompleteView):
         # SomeModel.objects.create(user=request.user, file=uploaded_file)
         # * Pass it as an argument to a function:
         # function_that_process_file(uploaded_file)
-        print(f" upload finished: {uploaded_file}")
+        # print(f" upload finished: {uploaded_file}")
         pass
 
     def get_response_data(self, chunked_upload, request):

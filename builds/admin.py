@@ -3,24 +3,12 @@ from celestia.translation.admin import TransFormSetMixin
 from django.contrib import admin
 from django.db.models import Count
 from django.template import Context, Template
+from django.urls import reverse_lazy
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 
 from . import models
 from .storage import rename_files
-
-"""
-from django.forms import BaseModelFormSet
-
-class TransInlineFormSet(BaseModelFormSet):
-    def __init__(self, data=None, files=None, auto_id='id_%s', prefix=None,
-                 queryset=None, initial=None, **kwargs):
-         print(initial)
-         super().__init__(data=None, files=None, auto_id='id_%s', prefix=None,
-                          queryset=None, initial=None, **kwargs)
-         print(self.initial)
-         #self.initial = [{'lang_code': i[0]} for i in settings.LANGUAGES]
-"""
 
 
 class FeatureTransInline(TransFormSetMixin, admin.TabularInline):
@@ -75,15 +63,33 @@ class PlatformAdmin(admin.ModelAdmin):
 
 @admin.register(models.Build)
 class BuildAdmin(admin.ModelAdmin):
+    upload_url = reverse_lazy("chunked_upload")
+    # change_list_template = 'admin/build_change_list.html'
 
     list_display = ('platform', 'file', 'has_doomseeker', 'version',
                     'crc32', 'humanize_size', 'update_datetime')
-    readonly_fields = ('file_datetime', 'create_datetime')
+    readonly_fields = ('file_datetime', 'create_datetime', 'upload_link')
+
+    fields = (
+        ('file', 'upload_link'),
+        'version',
+        ('platform', 'has_doomseeker'),
+        ('crc32', 'checksum_a'),
+        'size',
+        ('file_datetime', 'create_datetime'),
+    )
 
     def humanize_size(self, obj):
         return Template("{{ size|filesizeformat }}").render(Context({'size': obj.size}))
     humanize_size.short_description = _('Size')
     humanize_size.admin_order_field = 'size'
+
+    def upload_link(self, obj=None):
+        return mark_safe(
+            f"<p><a style='padding: 5px 1.5rem;' class='button' href='{self.upload_url}'>"
+            "Chunked upload form</a></p>"
+            "<p>Use this form to upload large files.</p>"
+        )
 
     def delete_with_files(modeladmin, request, queryset):
         """ run delete on every instance to trigger custom code for
@@ -94,3 +100,20 @@ class BuildAdmin(admin.ModelAdmin):
     delete_with_files.short_description = _("Delete with files")
 
     actions = (rename_files, delete_with_files)
+
+
+@admin.register(models.QCDEBuild)
+class QCDEBuildAdmin(BuildAdmin):
+    upload_url = reverse_lazy("qcde_chunked_upload")
+
+    fields = (
+        ('file', 'upload_link'),
+        'version',
+        ('platform'),
+        ('crc32', 'checksum_a'),
+        'size',
+        ('file_datetime', 'create_datetime'),
+    )
+
+    list_display = ('platform', 'file', 'version',
+                    'crc32', 'humanize_size', 'update_datetime')

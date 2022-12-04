@@ -3,11 +3,9 @@ import zlib
 from datetime import datetime
 from pathlib import Path
 
-from celestia.abstract_models import (AbstractDateTimeTrackedModel,
-                                      FileProcessingMixin)
+from celestia.abstract_models import AbstractDateTimeTrackedModel, FileProcessingMixin
 from celestia.bleach_models import BleachMixin
-from celestia.translation.models import (AbstractTranslatedModel,
-                                         BaseTranslatedQuerySet)
+from celestia.translation.models import AbstractTranslatedModel, BaseTranslatedQuerySet
 from celestia.utils import split_multiple_ext
 from chunked_upload.models import ChunkedUpload
 from django.conf import settings
@@ -28,6 +26,7 @@ class ChunkedUploadItem(ChunkedUpload):
 
 
 class Platform(models.Model):
+    """ Target OS platforms """
     class Meta:
         verbose_name = _('platform')
         verbose_name_plural = _('platforms')
@@ -44,29 +43,10 @@ class Platform(models.Model):
         return self.name
 
 
-class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
+class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
+    """ Base build model. Implements file related feautures like cheksums and file removal """
     class Meta:
-        verbose_name = _('build')
-        verbose_name_plural = _('builds')
-
-        constraints = [
-             models.UniqueConstraint(fields=('platform', 'version', 'has_doomseeker'),
-                                     name='%(app_label)s_%(class)s_unique_for_pfm_opt_and_ver'),
-             # models.UniqueConstraint(fields=('platform', 'checksum_a'),
-             # name='%(app_label)s_%(class)s_unique_for_pfm_and_chksum')
-        ]
-
-    def make_filename(obj, filename):
-        parts = ['Q-Zandronum', obj.version, obj.platform.name]
-        path = Path(filename)
-        # handle double and multiple extensions like .tar.gz
-        multi_tuple = split_multiple_ext(
-            path,
-            allowed_extensions=settings.CELESTIA_ALLOWED_NESTED_EXTS
-        )
-
-        ext = "".join(multi_tuple.subexts) + multi_tuple.ext
-        return " ".join(parts) + ext
+        abstract = True
 
     _file_fields_to_process = {
         'file': {
@@ -90,12 +70,6 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
     }
     _file_fields_to_cleanup = ('file', )
 
-    file = models.FileField(upload_to=make_filename,
-                            storage=BuildOverwriteStorage())
-    platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
-
-    has_doomseeker = models.BooleanField(default=False)
-
     size = models.PositiveBigIntegerField(default=0)
     size.help_text = _('size in bytes')
     crc32 = models.CharField(max_length=8, blank=True)
@@ -118,13 +92,67 @@ class Build(FileProcessingMixin, AbstractDateTimeTrackedModel):
         else:
             return val[-1]
 
-    def __str__(self):
-        return f"{self.platform} [{self.version}]"
-
     def delete(self, *args, **kwargs):
         """ remove file before removing instance """
         self.file.delete(save=False)
         return super().delete(*args, **kwargs)
+
+
+class Build(AbstractBuild):
+    """ Q-Zandronum build model """
+    class Meta:
+        verbose_name = _('build')
+        verbose_name_plural = _('builds')
+
+        constraints = [
+             models.UniqueConstraint(fields=('platform', 'version', 'has_doomseeker'),
+                                     name='%(app_label)s_%(class)s_unique_for_pfm_opt_and_ver'),
+             # models.UniqueConstraint(fields=('platform', 'checksum_a'),
+             # name='%(app_label)s_%(class)s_unique_for_pfm_and_chksum')
+        ]
+
+    def make_filename(obj, filename):
+        parts = ['Q-Zandronum', obj.version, obj.platform.name]
+        path = Path(filename)
+        # handle double and multiple extensions like .tar.gz
+        multi_tuple = split_multiple_ext(
+            path,
+            allowed_extensions=settings.CELESTIA_ALLOWED_NESTED_EXTS
+        )
+
+        ext = "".join(multi_tuple.subexts) + multi_tuple.ext
+        return " ".join(parts) + ext
+
+    file = models.FileField(upload_to=make_filename,
+                            storage=BuildOverwriteStorage())
+    platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
+
+    has_doomseeker = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.platform} [{self.version}]"
+
+
+class QCDEBuild(AbstractBuild):
+    """ QC:DE build model """
+    class Meta:
+        verbose_name = _('QCDE build')
+        verbose_name_plural = _('QCDE builds')
+
+        constraints = [
+             models.UniqueConstraint(fields=('platform', 'version'),
+                                     name='%(app_label)s_%(class)s_unique_for_pfm_and_ver'),
+        ]
+
+    def make_filename(obj, filename):
+        return str(Path("qcde/") / Path(filename))
+
+    file = models.FileField(upload_to=make_filename,
+                            storage=BuildOverwriteStorage())
+    platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
+
+    def __str__(self):
+        return f"QCDE {self.platform} [{self.version}]"
 
 
 class TranslatedFeatureQuerySet(BaseTranslatedQuerySet):

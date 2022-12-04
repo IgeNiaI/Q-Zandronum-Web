@@ -3,7 +3,7 @@
 from chunked_upload.constants import COMPLETE as COMPLETE_CHOICE
 from django.forms import BooleanField, ModelChoiceField, ModelForm
 
-from builds.models import Build, ChunkedUploadItem
+from builds.models import Build, ChunkedUploadItem, QCDEBuild
 
 
 class BuildPreloadedForm(ModelForm):
@@ -15,3 +15,9 @@ class BuildPreloadedForm(ModelForm):
     create = BooleanField(required=False, label="Force create",
                           help_text='* Check to create new entry instead of updating one'
                                     ' for same platform')
+
+
+class QCDEBuildPreloadedForm(BuildPreloadedForm):
+    class Meta:
+        model = QCDEBuild
+        fields = ['platform', 'version']

@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.31.2-b"
+__version__ = "0.42.1-b-1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -65,6 +65,7 @@ class BaseSettings():
                       'django.contrib.messages',
                       # 'django.contrib.sites',  # needed for sitemap framework
                       'debug_toolbar',
+                      'corsheaders',
                       'sniplates',
                       'celestia',
                       'core',
@@ -78,6 +79,7 @@ class BaseSettings():
                   'django.contrib.sessions.middleware.SessionMiddleware',
                   'debug_toolbar.middleware.DebugToolbarMiddleware',
                   'django.middleware.locale.LocaleMiddleware',
+                  'corsheaders.middleware.CorsMiddleware',
                   'django.middleware.common.CommonMiddleware',
                   'django.middleware.csrf.CsrfViewMiddleware',
                   'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -135,6 +137,8 @@ class BaseSettings():
     LOGIN_URL = '/auth/login/'
     LOGIN_REDIRECT_URL = '/'
 
+    DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
     # Password validation
     # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
 
@@ -151,7 +155,7 @@ class BaseSettings():
     LANGUAGE_CODE = 'en'
 
     TIME_ZONE = 'Europe/Moscow'  # 'UTC'
-    USE_I18N = True
+    USE_I18N = False
     USE_L10N = True
     USE_TZ = True
 
@@ -205,6 +209,8 @@ class BaseSettings():
 class DevSettings(BaseSettings):
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
+
+    CORS_ALLOW_ALL_ORIGINS = True
 
     # SECURITY WARNING: define the correct hosts in production!
     ALLOWED_HOSTS = ['*']
