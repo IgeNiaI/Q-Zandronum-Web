@@ -4,7 +4,7 @@ Django website for Q-Zandronum project.
 ## Installation
 **Reguirements**
 Project is using python poetry package and environment manager, use it to install python dependecies, see pyproject.toml
-- **python** >= 3.6.4
+- **python** >= 3.8.5
 - **poetry**
 - **Nginx**
 - **PostgreSQL** >= 10 *(could be swapped for another DBMS, but PG is highly recommended)*
@@ -21,3 +21,7 @@ $ python manage.py check
  - CELESTIA_ALLOWED_NESTED_EXTS - add allowed nested extensions for file uploads. e.g. ('tar', 'ext') to save .tar.gz or .ext.zip extension in file name.
 ### qzandronum.ini
 Configuration file for app server (uWSGI by default)
+
+
+## Page Configuration
+Meta like page description, page title and keywords can be set through PageConfig admin
