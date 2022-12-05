@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.42.1-b-1"
+__version__ = "0.42.1-b-2"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -237,6 +237,38 @@ class LiveSettings(BaseSettings):
             'ENGINE': 'django.db.backends.postgresql',
             'NAME': 'qzandronum',
         }
+    }
+
+    LOGGING = {  # 'email_backend': "django.core.mail.backends.console.EmailBackend",
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "verbose": {
+                "format": "[{levelname}] [{asctime}] {module} {message}",
+                "style": "{",
+            }
+        },
+        "filters": {"require_debug_false": {"()": "django.utils.log.RequireDebugFalse"}},
+        "handlers": {
+            "mail_admins": {
+                "level": "ERROR",
+                "class": "django.utils.log.AdminEmailHandler",
+            },
+            "file": {
+                "level": "WARNING",
+                "class": "logging.FileHandler",
+                "filename": Path.home() / "logs" / "django-qz.log",
+            },
+            "console": {
+                "level": "DEBUG",
+                "class": "logging.StreamHandler",
+                "formatter": "verbose",
+            },
+        },
+        "root": {"handlers": ["file"], "level": "WARNING"},
+        "loggers": {
+            "django": {"handlers": ["console", "file"], "level": "INFO", "propagate": True}
+        },
     }
 
     @cbs.env
