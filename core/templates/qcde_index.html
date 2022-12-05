@@ -60,7 +60,9 @@
             </div>
             <div class='col text-center'>
                 <a class="btn shadow btn-danger btn-huge"
-                    href='{{ primary_build.file.url|default:secondary_build.file.url }}'>
+                    {% if primary_build or secondary_build %}
+                    href='{{ primary_build.file.url|default:secondary_build.file.url }}'
+                    {% endif %}>
                 PLAY NOW
                 </a>
             </div>
