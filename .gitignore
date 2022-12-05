@@ -41,3 +41,4 @@ celerybeat*
 
 # specific
 webfiles/
+start_server.sh
