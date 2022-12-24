@@ -21,7 +21,7 @@ main
     position: absolute;
     top: var(--nav-height);
 
-    height: calc(100vh - var(--nav-height) - var(--footnote-height));
+    /*height: calc(100vh - var(--nav-height) - var(--footnote-height));*/
 
     overflow: hidden;
 }
@@ -57,6 +57,13 @@ main
     max-width: 900px;
     z-index: 2;
 }
+.mainText:hover
+{
+    opacity: 0;
+    transition: opacity 0.3s;
+    transition-delay: 1s;
+}
+
 body
 {
     background: black;
@@ -111,4 +118,20 @@ footer
 .qcde a:visited
 {
     color: #C00;
+}
+
+.carousel-item.active > img
+{
+    transition: transform 10s ease-in;
+    transform: scale(1.25, 1.25);
+}
+
+.carousel-item > img
+{
+    transform: none;
+}
+
+.carousel-inner
+{
+    min-width: 1280px;
 }
