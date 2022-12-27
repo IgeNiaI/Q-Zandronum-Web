@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.44.1-b"
+version = "0.50.1-b"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
@@ -19,6 +19,7 @@ uWSGI = "^2.0.19"
 psycopg2 = "^2.8.6"
 django-chunked-upload = "^2.0.0"
 httpagentparser = "^1.9.5"
+pillow = "^9.3.0"
 
 
 [tool.poetry.dev-dependencies]

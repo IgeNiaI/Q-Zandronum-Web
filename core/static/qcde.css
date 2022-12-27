@@ -21,7 +21,7 @@ main
     position: absolute;
     top: var(--nav-height);
 
-    /*height: calc(100vh - var(--nav-height) - var(--footnote-height));*/
+    max-height: calc(100vh - var(--nav-height) - var(--footnote-height));
 
     overflow: hidden;
 }
@@ -131,7 +131,16 @@ footer
     transform: none;
 }
 
-.carousel-inner
+@media screen and (max-width: 1280px)
 {
-    min-width: 1280px;
+    .carousel-inner
+    {
+        min-width: 1280px;
+        left: calc(50% - 640px);
+    }
+}
+
+.carousel-item
+{
+    transition-duration: 3s !important;
 }

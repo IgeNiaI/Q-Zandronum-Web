@@ -10,6 +10,7 @@ from django.views.generic import TemplateView
 # from django.views.generic import DetailView
 from django.views.generic.list import ListView
 
+from bootslider.models import Slider
 from builds.models import Build, QCDEBuild, TranslatedFeature
 
 from .models import TranslatedPageConfig
@@ -77,6 +78,8 @@ class QcdeView(PageConfigMixin, TemplateView):
         else:
             context['primary_build'] = lnx_build
             context['secondary_build'] = win_build
+
+        context['slider'] = Slider.objects.filter(codename='qcde-slider').first()
 
         context['page_config'] = self.get_page_config()
         return context
