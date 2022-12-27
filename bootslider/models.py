@@ -35,15 +35,23 @@ class AbstractSlider(models.Model):
     id = models.SmallAutoField(primary_key=True)
 
     codename = models.SlugField(max_length=64, unique=True)
-    slide_select = models.CharField(max_length=128, default='#slide-')
+    codename.help_text = "Unique identificator and used as html ID"
+
+    slide_select = models.CharField(max_length=128, default='slide-')
     animation_class = models.CharField(max_length=256, default='active')
     ride_class = models.CharField(max_length=256, default='carousel')
+    ride_class.help_text = 'class used to init Slider, used in html'
 
     inline_style = models.TextField(default="", blank=True)
+    inline_style.help_text = "added with slider.media, for container style use extra_attrs"
 
     interval_ms = models.PositiveIntegerField(default=5000)
-    extra_data = models.JSONField(default=_default_attrs)
+    interval_ms.help_text = "Slide delay in ms"
+
+    extra_data = models.JSONField(default=_default_attrs, blank=True)
+    extra_data.help_text = "html data-* attributes in JSON format"
     extra_attrs = models.JSONField(default=dict, blank=True)
+    extra_data.help_text = "html attributes in JSON format"
 
     @property
     def attrs(self):
@@ -66,7 +74,6 @@ class AbstractSlider(models.Model):
             "data-slide-select": self.slide_select,
         })
         all_attrs.update(self.extra_data)
-        print(all_attrs)
         return " ".join([format_html('{0}="{1}"', key, value) for key, value in all_attrs.items()])
 
     @property
