@@ -25,24 +25,8 @@ main
 
     overflow: hidden;
 }
-.h720 > .veil
-{
-    max-height: 720px;
-}
-.h720 #ytplayer
-{
-    left: calc(50% - 640px);
-/*     bottom: calc(720px - 100vh); */
-}
-.h1080 > .veil
-{
-    max-height: 1080px;
-}
-.h1080 #ytplayer
-{
-    left: calc(50% - 960px);
-/*     bottom: calc(1080px - 100vh); */
-}
+
+
 
 #videoTopContaier
 {
@@ -52,18 +36,11 @@ main
 .mainText
 {
     color: var(--bs-light);
-    z-index: 2;
     text-shadow: 2px 2px 4px #000;
     max-width: 900px;
     z-index: 2;
+    margin-top: var(--nav-height);
 }
-.mainText:hover
-{
-    opacity: 0;
-    transition: opacity 0.3s;
-    transition-delay: 1s;
-}
-
 body
 {
     background: black;
@@ -122,14 +99,25 @@ footer
 
 .carousel-item.active > img
 {
-    transition: transform 10s ease-in;
+    transition:  opacity, transform 10s ease-in;
     transform: scale(1.25, 1.25);
+    opacity: 1
 }
 
 .carousel-item > img
 {
     transform: none;
 }
+
+.carousel-fade .carousel-item > img
+{
+    transition:  transform 10s ease-in;
+}
+.carousel-fade .carousel-item.carousel-item-start > img
+{
+    transform: scale(1.25, 1.25);
+}
+
 
 @media screen and (max-width: 1280px)
 {
@@ -138,9 +126,20 @@ footer
         min-width: 1280px;
         left: calc(50% - 640px);
     }
+    .veil
+    {
+        top: calc(40vh - 360px);
+    }
+
+
 }
+@media screen and (max-width: 480px)
+{
+    body {font-size: 0.85rem;}
+}
+
 
 .carousel-item
 {
-    transition-duration: 3s !important;
+     transition-duration: 5s !important;
 }
