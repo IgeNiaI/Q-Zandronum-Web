@@ -51,7 +51,7 @@ class AbstractSlider(models.Model):
     extra_data = models.JSONField(default=_default_attrs, blank=True)
     extra_data.help_text = "html data-* attributes in JSON format"
     extra_attrs = models.JSONField(default=dict, blank=True)
-    extra_data.help_text = "html attributes in JSON format"
+    extra_attrs.help_text = "html attributes in JSON format"
 
     @property
     def attrs(self):

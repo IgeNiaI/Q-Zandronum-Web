@@ -99,7 +99,7 @@ footer
 
 .carousel-item.active > img
 {
-    transition:  opacity, transform 10s ease-in;
+    transition:  transform 13s ease-in;
     transform: scale(1.25, 1.25);
     opacity: 1
 }
@@ -111,7 +111,7 @@ footer
 
 .carousel-fade .carousel-item > img
 {
-    transition:  transform 10s ease-in;
+    transition:  transform 13s ease-in;
 }
 .carousel-fade .carousel-item.carousel-item-start > img
 {

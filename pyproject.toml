@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.50.1-b"
+version = "0.51.1-b"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
@@ -15,7 +15,7 @@ celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git" }
 pip = ">=20.2.4"
 bleach = "^3.2"
 django-sniplates = "^0.7.0"
-uWSGI = "^2.0.19"
+uWSGI = "^2.0.21"
 psycopg2 = "^2.8.6"
 django-chunked-upload = "^2.0.0"
 httpagentparser = "^1.9.5"
