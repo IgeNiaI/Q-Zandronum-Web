@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.51.1-b"
+version = "0.51.2-b"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
@@ -10,7 +10,7 @@ pre-commit = "~2"
 django-classy-settings = "^2.1"
 Django = "3.2.*"
 django-debug-toolbar = "~2"
-celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git" }
+celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git", rev = "11a6a6cc3b05899ff604a58e3a7987b97c3e1c78"  }
 
 pip = ">=20.2.4"
 bleach = "^3.2"

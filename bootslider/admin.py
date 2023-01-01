@@ -30,4 +30,18 @@ class SliderAdmin(admin.ModelAdmin):
 
 @admin.register(SliderImage)
 class SliderImageAdmin(admin.ModelAdmin):
-    list_display = (str, 'id', 'slider', 'is_public')
+    list_display = ('id', '__str__', 'preview_html', 'slider', 'is_public')
+
+    list_display_links = ('id', '__str__')
+
+    list_per_page = 25
+    search_fields = ('img', 'img_alt')
+
+    actions = ('toggle_public', )
+
+    def toggle_public(self, request, queryset):
+        counter = 0
+        for img in queryset:
+            img.is_public = not img.is_public
+            img.save()
+        self.message_user(request, f"Toggled public state: {counter}")

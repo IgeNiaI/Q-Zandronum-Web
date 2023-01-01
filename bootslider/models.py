@@ -1,5 +1,8 @@
+import zlib
 from pathlib import Path
 
+from celestia.abstract_models import FileProcessingMixin
+from celestia.utils.image import make_preview
 from django.db import models
 from django.forms import Media
 from django.utils.html import format_html
@@ -101,7 +104,7 @@ class SlideQuerySet(models.QuerySet):
         return self.public().order_by('?')
 
 
-class AbstractSliderImage(models.Model):
+class AbstractSliderImage(FileProcessingMixin, models.Model):
 
     class Meta:
         abstract = True
@@ -111,6 +114,7 @@ class AbstractSliderImage(models.Model):
 
     img_alt = models.CharField(max_length=256, default="img")
     img = models.ImageField(upload_to=make_filename)
+    preview = models.ImageField(default='', blank=True)
 
     slider = models.ForeignKey('Slider', related_name='slides', on_delete=models.CASCADE)
 
@@ -119,8 +123,34 @@ class AbstractSliderImage(models.Model):
 
     objects = SlideQuerySet.as_manager()
 
+    crc32 = models.CharField(max_length=8, default='', blank=True)
+
+    # non field attributes
+    _file_fields_to_process = {
+        'img': {
+            'crc32': {'function': zlib.crc32, 'postprocessor': lambda val: f"{val:X}"},
+        }
+    }
+    _file_fields_to_cleanup = ('img', 'preview')
+    preview_size = (128, 80)
+
     def __str__(self):
         return self.img.name
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        if self.img:
+            self.preview = str(make_preview(self.img.path, unlink=True, size=self.preview_size))
+            super().save(update_fields=('preview', ), postprocess_files=False)
+
+    def preview_html(self):
+        if self.img and self.preview:
+            return format_html(
+                "<a href='{0}'><img src='{1}' alt='{2}' style='width:{3};height:{4}'></a>",
+                self.img.url, self.preview.url, self.img_alt, self.preview_size[0], self.preview_size[1]
+            )
+        else:
+            return "no image"
 
 
 class Slider(AbstractSlider):
