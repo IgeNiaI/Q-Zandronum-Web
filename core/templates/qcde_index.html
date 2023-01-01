@@ -114,12 +114,6 @@
 
 {% block footer_classes %}qcde d-flex flex-column justify-content-end{% endblock %}
 
-{% block document_end %}
-    <script defer src="{% static 'js/qcde.js' %}" crossorigin="anonymous"></script>
-    <script>
-    </script>
-{% endblock %}
-
 <footer class='qcde d-flex flex-column justify-content-end'>
     {% if user.is_staff %}
     <div class='mx-auto'>
@@ -128,7 +122,7 @@
     </div>
     {% endif %}
 
-    {% now 'Y' as year %}{# used in copyright string#}
+    {% now 'Y' as year %}{# used in copyright string #}
     <div class='subcolour d-flex flex-row flex-wrap justify-content-center mt-3 mx-2' id='copyrights'>
         <span><i class="fas fa-copyright"></i> <b>{% if year != '2020' %}2020-{% endif %}{{ year }} Evghenii Olenciuc</b></span>
         <span class='font-weight-light mx-1'>
