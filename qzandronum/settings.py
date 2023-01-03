@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.51.2-b-1"
+__version__ = "0.51.2-b-2"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -90,6 +90,7 @@ class BaseSettings():
     SETTING_CONTEXT_NAMES = (
         'PROJECT_VERSION',
         'DJANGO_VERSION',
+        'DISCORD_LINK',
         # 'COMMON_SCRIPTS',
         # 'COMMON_STYLES',
     )
@@ -165,6 +166,10 @@ class BaseSettings():
 
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
+
+    @cbs.env
+    def DISCORD_LINK(seld):
+        return "https://discord.gg/u4ptaMk"
 
     # WARNING! Cast to Path!
     @cbs.env(cast=Path)
