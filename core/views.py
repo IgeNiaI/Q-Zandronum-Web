@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import logging
 import warnings
 
 import httpagentparser
@@ -15,6 +16,7 @@ from builds.models import Build, QCDEBuild, TranslatedFeature
 
 from .models import TranslatedPageConfig
 
+logger = logging.getLogger("django")
 views = ViewContainer()
 
 
@@ -67,17 +69,18 @@ class QcdeView(PageConfigMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         win_build = self.get_builds(platform__name="Windows").first()
-        lnx_build = self.get_builds(platform__name="Linux").first()
+        lnx_build = self.get_builds(platform__name="Linux amd64").first()
 
         user_agent = httpagentparser.simple_detect(self.request.META.get("HTTP_USER_AGENT"))
-        print(self.request.META.get("HTTP_USER_AGENT"))
-        print(user_agent)
+        logger.debug(self.request.META.get("HTTP_USER_AGENT"))
+        logger.debug(user_agent)
         if "windows" in user_agent[0].lower():
             context['primary_build'] = win_build
             context['secondary_build'] = lnx_build
         else:
             context['primary_build'] = lnx_build
             context['secondary_build'] = win_build
+        logger.debug(f" primary: {context['primary_build']} secondary: {context['secondary_build']} ")
 
         context['slider'] = Slider.objects.filter(codename='qcde-slider').first()
 

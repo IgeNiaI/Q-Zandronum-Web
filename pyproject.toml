@@ -22,8 +22,8 @@ httpagentparser = "^1.9.5"
 pillow = "^9.3.0"
 
 
-[tool.poetry.dev-dependencies]
-#celestia = {path = "../celestia", develop = true}
+[tool.poetry.group.dev.dependencies]
+django-extensions = "^3.2.1"
 isort = {extras = ["pyproject"], version = "^5.6.4"}
 black = "^20.8b1"
 

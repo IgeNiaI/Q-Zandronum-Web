@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.51.2-b-2"
+__version__ = "0.51.2-b-3"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -57,21 +57,22 @@ class BaseSettings():
     ALLOWED_HOSTS = ['*']
 
     # Application definition
-
-    INSTALLED_APPS = ['django.contrib.admin',
-                      'django.contrib.auth',
-                      'django.contrib.contenttypes',
-                      'django.contrib.sessions',
-                      'django.contrib.messages',
-                      # 'django.contrib.sites',  # needed for sitemap framework
-                      'debug_toolbar',
-                      'sniplates',
-                      'celestia',
-                      'core',
-                      'builds',
-                      'bootslider',
-                      'chunked_upload',
-                      'django.contrib.staticfiles', ]
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        # 'django.contrib.sites',  # needed for sitemap framework
+        'debug_toolbar',
+        'sniplates',
+        'celestia',
+        'core',
+        'builds',
+        'bootslider',
+        'chunked_upload',
+        'django.contrib.staticfiles',
+    ]
 
     SITE_ID = 1  # needed for sites framework
 
@@ -216,6 +217,10 @@ class DevSettings(BaseSettings):
 
     CORS_ALLOW_ALL_ORIGINS = True
 
+    @property
+    def INSTALLED_APPS(self):
+        return super().INSTALLED_APPS + ['django_extensions']
+
     # SECURITY WARNING: define the correct hosts in production!
     ALLOWED_HOSTS = ['*']
 
@@ -271,7 +276,7 @@ class LiveSettings(BaseSettings):
         },
         "root": {"handlers": ["file"], "level": "WARNING"},
         "loggers": {
-            "django": {"handlers": ["console", "file"], "level": "INFO", "propagate": True}
+            "django": {"handlers": ["console", "file"], "level": "DEBUG", "propagate": True}
         },
     }
 
