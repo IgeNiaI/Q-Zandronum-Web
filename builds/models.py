@@ -1,17 +1,21 @@
 import hashlib
 import zlib
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
-from celestia.abstract_models import AbstractDateTimeTrackedModel, FileProcessingMixin
+from celestia.abstract_models import (AbstractDateTimeTrackedModel,
+                                      FileProcessingMixin)
 from celestia.bleach_models import BleachMixin
-from celestia.translation.models import AbstractTranslatedModel, BaseTranslatedQuerySet
+from celestia.translation.models import (AbstractTranslatedModel,
+                                         BaseTranslatedQuerySet)
 from celestia.utils import split_multiple_ext
 from chunked_upload.models import ChunkedUpload
 from django.conf import settings
+from django.urls import reverse
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from django.exceptions import ValidationError
 
 from .storage import BuildOverwriteStorage
 
@@ -41,6 +45,65 @@ class Platform(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class WeeklyDownloadCounterQuerySet(models.QuerySet):
+    def for_today(self, build):
+        today = timezone.now().date()
+        # end_of_week = today + timedelta(days=7-today.weekday())
+        start_of_week = today - timedelta(days=today.weekday())
+
+        if isinstance(build, Build):
+            kwargs = {'build': build}
+        elif isinstance(build, QCDEBuild):
+            kwargs = {'qcde_build': build}
+        else:
+            raise ValueError("build argument of 'for_today' must be instance of Build or QCDEBuild!")
+
+        kwargs['start_date'] = start_of_week
+
+        counter, created = self.get_or_create(**kwargs)
+        return counter, created
+
+    def increment_for_build(self, build):
+        counter, created = self.for_today(build)
+        counter.value = models.F('value') + 1
+        counter.save(update_fields=['value'])
+
+
+class WeeklyDownloadCounter(models.Model):
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                check=models.Q(build__isnull=False) | models.Q(qcde_build__isnull=False),
+                name='both_builds_not_null'
+            )
+        ]
+
+    value = models.PositiveIntegerField(default=0)
+    start_date = models.DateField()
+    build = models.ForeignKey("Build", blank=True, null=True,
+                              related_name='download_counters', on_delete=models.PROTECT)
+
+    qcde_build = models.ForeignKey("QCDEBuild", blank=True, null=True,
+                                   related_name='download_counters', on_delete=models.PROTECT)
+
+    objects = WeeklyDownloadCounterQuerySet.as_manager()
+
+    def clean(self):
+        if self.build is None and self.qcde_build is None:
+            raise ValidationError(_('one of builds for counter must be set'))
+        elif self.build and self.qcde_build:
+            raise ValidationError(_('only build or qcde_build must be set'))
+
+    def __str__(self):
+        return f"{self.start_date} - {self.start_date + timedelta(days=6)}"
+
+
+class BuildQuerySet(models.QuerySet):
+    def annotate_downloads(self):
+        return self.annotate(total_downloads=models.Sum("download_counters__value"))
 
 
 class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
@@ -85,6 +148,8 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
         default=timezone.make_aware(datetime(2000, 1, 1))
     )
 
+    objects = BuildQuerySet.as_manager()
+
     def get_checksum_a(self, split=True):
         val = self.checksum_a.split('|')  # separator for checksum method
         if split:
@@ -96,6 +161,9 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
         """ remove file before removing instance """
         self.file.delete(save=False)
         return super().delete(*args, **kwargs)
+
+    def get_total_downloads(self):
+        return self.total_downloads
 
 
 class Build(AbstractBuild):
@@ -121,7 +189,7 @@ class Build(AbstractBuild):
         )
 
         ext = "".join(multi_tuple.subexts) + multi_tuple.ext
-        return " ".join(parts) + ext
+        return str(settings.SENDFILE_ROOT / (" ".join(parts) + ext))
 
     file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())
@@ -131,6 +199,12 @@ class Build(AbstractBuild):
 
     def __str__(self):
         return f"{self.platform} [{self.version}]"
+
+    def get_absolute_url(self):
+        if self.has_doomseeker:
+            return reverse("build_download_ds", kwargs={"platform": self.platform})
+        else:
+            return reverse("build_download", kwargs={"platform": self.platform, "build": 'qz'})
 
 
 class QCDEBuild(AbstractBuild):
@@ -145,7 +219,7 @@ class QCDEBuild(AbstractBuild):
         ]
 
     def make_filename(obj, filename):
-        return str(Path("qcde/") / Path(filename))
+        return str(settings.SENDFILE_ROOT / "qcde/" / filename)
 
     file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())
@@ -153,6 +227,9 @@ class QCDEBuild(AbstractBuild):
 
     def __str__(self):
         return f"QCDE {self.platform} [{self.version}]"
+
+    def get_absolute_url(self):
+        return reverse("build_download", kwargs={"platform": self.platform, "build": 'qcde'})
 
 
 class TranslatedFeatureQuerySet(BaseTranslatedQuerySet):

@@ -4,20 +4,22 @@ from shutil import disk_usage
 
 from celestia.view_container import ViewContainer, register_view
 from chunked_upload.constants import COMPLETE as COMPLETE_CHOICE
-from chunked_upload.views import ChunkedUploadCompleteView as DefaultChunkedUploadCompleteView
+from chunked_upload.views import \
+    ChunkedUploadCompleteView as DefaultChunkedUploadCompleteView
 from chunked_upload.views import ChunkedUploadView
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db import transaction
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, Http404
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView
+from django_sendfile import sendfile
 
 from builds.models import Build, Platform, QCDEBuild
 
 from .forms import BuildPreloadedForm, QCDEBuildPreloadedForm
-from .models import ChunkedUploadItem
+from .models import ChunkedUploadItem, WeeklyDownloadCounter
 
 views = ViewContainer()
 
@@ -190,3 +192,24 @@ class ChunkedUploadCompleteView(DefaultChunkedUploadCompleteView):
     def get_response_data(self, chunked_upload, request):
         return {'message': ("You successfully uploaded '%s' (%s bytes)!" %
                             (chunked_upload.filename, chunked_upload.offset))}
+
+
+@register_view(views)
+def build_download(request, platform, build='qz', doomseeker=False):
+    print(f"Counter download for '{build} {platform}' (ds {doomseeker})")
+    if build.lower() == "qz":
+        instance = Build.objects.filter(
+            platform__name=platform, has_doomseeker=doomseeker
+        ).order_by('-version').first()
+    elif build.lower() == "qcde":
+        instance = QCDEBuild.objects.filter(platform=platform).order_by('-version').first()
+    else:
+        raise Http404
+
+    if instance is None:
+        raise Http404("<h1>File not found for given parameters</h1>")
+
+    if not request.user.is_superuser:
+        WeeklyDownloadCounter.objects.increment_for_build(instance)
+
+    return sendfile(request, instance.file.path)

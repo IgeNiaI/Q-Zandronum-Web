@@ -189,6 +189,13 @@ class BaseSettings():
     def MEDIA_ROOT(self):
         return self.WEB_ROOT / 'media'
 
+    @property
+    def SENDFILE_ROOT(self):
+        return self.MEDIA_ROOT / 'restricted/'
+
+    SENDFILE_URL = '/restricted'
+    SENDFILE_BACKEND = "django_sendfile.backends.nginx"
+
     STATIC_URL = '/static/'
     MEDIA_URL = '/files/'
 

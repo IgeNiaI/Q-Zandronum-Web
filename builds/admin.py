@@ -66,7 +66,7 @@ class BuildAdmin(admin.ModelAdmin):
     upload_url = reverse_lazy("chunked_upload")
     # change_list_template = 'admin/build_change_list.html'
 
-    list_display = ('platform', 'file', 'has_doomseeker', 'version',
+    list_display = ('platform', 'file', 'has_doomseeker', 'version', 'get_total_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
     readonly_fields = ('file_datetime', 'create_datetime', 'upload_link')
 
@@ -101,6 +101,9 @@ class BuildAdmin(admin.ModelAdmin):
 
     actions = (rename_files, delete_with_files)
 
+    def get_queryset(self, request):
+        return super().get_queryset(request).annotate_downloads()
+
 
 @admin.register(models.QCDEBuild)
 class QCDEBuildAdmin(BuildAdmin):
@@ -115,5 +118,10 @@ class QCDEBuildAdmin(BuildAdmin):
         ('file_datetime', 'create_datetime'),
     )
 
-    list_display = ('platform', 'file', 'version',
+    list_display = ('platform', 'file', 'version', 'get_total_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
+
+
+@admin.register(models.WeeklyDownloadCounter)
+class DownloadCounterAdmin(admin.ModelAdmin):
+    list_display = (str, 'build', 'qcde_build', 'value')
