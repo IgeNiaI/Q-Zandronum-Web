@@ -11,11 +11,11 @@ from celestia.translation.models import (AbstractTranslatedModel,
 from celestia.utils import split_multiple_ext
 from chunked_upload.models import ChunkedUpload
 from django.conf import settings
-from django.urls import reverse
+from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from django.exceptions import ValidationError
 
 from .storage import BuildOverwriteStorage
 
@@ -189,7 +189,7 @@ class Build(AbstractBuild):
         )
 
         ext = "".join(multi_tuple.subexts) + multi_tuple.ext
-        return str(settings.SENDFILE_ROOT / (" ".join(parts) + ext))
+        return str(settings.SENDFILE_SUBPATH / (" ".join(parts) + ext))
 
     file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())
@@ -219,7 +219,7 @@ class QCDEBuild(AbstractBuild):
         ]
 
     def make_filename(obj, filename):
-        return str(settings.SENDFILE_ROOT / "qcde/" / filename)
+        return str(settings.SENDFILE_SUBPATH / "qcde/" / filename)
 
     file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())

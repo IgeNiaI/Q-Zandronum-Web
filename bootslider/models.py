@@ -110,11 +110,11 @@ class AbstractSliderImage(FileProcessingMixin, models.Model):
         abstract = True
 
     def make_filename(obj, filename):
-        return Path('slides/') / obj.slider.get_path_element() / filename
+        return Path('public/slides/') / obj.slider.get_path_element() / filename
 
     img_alt = models.CharField(max_length=256, default="img")
     img = models.ImageField(upload_to=make_filename)
-    preview = models.ImageField(default='', blank=True)
+    preview = models.ImageField(default='', upload_to='public/', blank=True)
 
     slider = models.ForeignKey('Slider', related_name='slides', on_delete=models.CASCADE)
 

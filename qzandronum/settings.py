@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.51.2-b-3"
+__version__ = "0.52.1-b-1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -52,7 +52,7 @@ class BaseSettings():
     # SECURITY WARNING: don't run with debug turned on in production!
     @cbs.env(key='DEBUG')
     def DEBUG(self):
-        return True
+        return False
 
     ALLOWED_HOSTS = ['*']
 
@@ -189,9 +189,11 @@ class BaseSettings():
     def MEDIA_ROOT(self):
         return self.WEB_ROOT / 'media'
 
+    SENDFILE_SUBPATH = Path("restricted/")
+
     @property
     def SENDFILE_ROOT(self):
-        return self.MEDIA_ROOT / 'restricted/'
+        return self.MEDIA_ROOT / self.SENDFILE_SUBPATH
 
     SENDFILE_URL = '/restricted'
     SENDFILE_BACKEND = "django_sendfile.backends.nginx"
@@ -219,8 +221,6 @@ class BaseSettings():
 
 
 class DevSettings(BaseSettings):
-    # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
 
     CORS_ALLOW_ALL_ORIGINS = True
 

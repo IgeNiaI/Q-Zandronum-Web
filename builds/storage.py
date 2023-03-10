@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 from django.conf import settings
 from django.contrib import messages
@@ -29,7 +30,7 @@ def rename_files(modeladmin, request, queryset):
         if old_name != new_name:
             msg = f"Renaming `{old_name}` -> `{new_name}`"
             modeladmin.message_user(request, msg, messages.WARNING)
-            old_path = settings.MEDIA_ROOT / build.file.name
+            old_path = Path(build.file.path)
             new_path = settings.MEDIA_ROOT / new_name
             try:
                 old_path.rename(new_path)
