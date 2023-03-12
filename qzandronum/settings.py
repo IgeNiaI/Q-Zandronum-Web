@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.52.1-b-1"
+__version__ = "0.52.1-b-2"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -52,7 +52,7 @@ class BaseSettings():
     # SECURITY WARNING: don't run with debug turned on in production!
     @cbs.env(key='DEBUG')
     def DEBUG(self):
-        return False
+        return True
 
     ALLOWED_HOSTS = ['*']
 
@@ -217,6 +217,9 @@ class BaseSettings():
             'propagate': True,
             'level': 'DEBUG',
         },
+        "loggers": {
+            "django": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+        }
     }
 
 

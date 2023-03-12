@@ -66,7 +66,7 @@ class BuildAdmin(admin.ModelAdmin):
     upload_url = reverse_lazy("chunked_upload")
     # change_list_template = 'admin/build_change_list.html'
 
-    list_display = ('platform', 'file', 'has_doomseeker', 'version', 'get_total_downloads',
+    list_display = ('platform', 'file_link', 'has_doomseeker', 'version', 'get_total_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
     readonly_fields = ('file_datetime', 'create_datetime', 'upload_link')
 
@@ -83,6 +83,9 @@ class BuildAdmin(admin.ModelAdmin):
         return Template("{{ size|filesizeformat }}").render(Context({'size': obj.size}))
     humanize_size.short_description = _('Size')
     humanize_size.admin_order_field = 'size'
+
+    def file_link(self, obj):
+        return mark_safe(f"<a href='{obj.get_absolute_url()}'>{ obj.file }</a>")
 
     def upload_link(self, obj=None):
         return mark_safe(
@@ -118,7 +121,7 @@ class QCDEBuildAdmin(BuildAdmin):
         ('file_datetime', 'create_datetime'),
     )
 
-    list_display = ('platform', 'file', 'version', 'get_total_downloads',
+    list_display = ('platform', 'file_link', 'version', 'get_total_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
 
 

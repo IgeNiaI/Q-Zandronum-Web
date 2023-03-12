@@ -1,4 +1,6 @@
+import logging
 import re
+from datetime import datetime, timedelta
 from pathlib import Path
 from shutil import disk_usage
 
@@ -20,6 +22,8 @@ from builds.models import Build, Platform, QCDEBuild
 
 from .forms import BuildPreloadedForm, QCDEBuildPreloadedForm
 from .models import ChunkedUploadItem, WeeklyDownloadCounter
+
+logger = logging.getLogger("django")
 
 views = ViewContainer()
 
@@ -194,9 +198,39 @@ class ChunkedUploadCompleteView(DefaultChunkedUploadCompleteView):
                             (chunked_upload.filename, chunked_upload.offset))}
 
 
+def test_download_time_to_count(request, build, instance_id):
+    # return True to count
+
+    key = f"{build}#{instance_id}"
+    download_time = request.session.get(key, None)
+    if download_time:
+        download_time = datetime.fromisoformat(download_time)
+        if datetime.now() - download_time > timedelta(hours=12):
+            request.session[key] = datetime.now().isoformat(timespec='minutes')
+            do_count = True
+        else:
+            do_count = False
+    else:
+        request.session[key] = datetime.now().isoformat(timespec='minutes')
+        do_count = True
+    print(f"session download time to count: {do_count} ({download_time})")
+    return do_count
+
+
+def test_range_header_to_count(request_meta):
+    range_header = request_meta.get("HTTP_RANGE", "")
+    if range_header:
+        zero_byte_flag = re.match(r"^bytes=0", range_header.lower())
+        if not zero_byte_flag:
+            logger.info(f"Non-zero Range header: '{range_header}'")
+    else:
+        zero_byte_flag = True
+    return zero_byte_flag
+
+
 @register_view(views)
 def build_download(request, platform, build='qz', doomseeker=False):
-    print(f"Counter download for '{build} {platform}' (ds {doomseeker})")
+    logger.debug(f"Counter download for '{build} {platform}' (ds {doomseeker})")
     if build.lower() == "qz":
         instance = Build.objects.filter(
             platform__name=platform, has_doomseeker=doomseeker
@@ -210,6 +244,18 @@ def build_download(request, platform, build='qz', doomseeker=False):
         raise Http404("<h1>File not found for given parameters</h1>")
 
     if not request.user.is_superuser:
-        WeeklyDownloadCounter.objects.increment_for_build(instance)
+        # check if file was already downloaded recently
+
+        try:
+            if all((
+                    test_range_header_to_count(request.META),
+                    test_download_time_to_count(request, build, instance.id)
+                    )):
+                logging.info(f"increment for {instance.id}")
+                WeeklyDownloadCounter.objects.increment_for_build(instance)
+        except Exception as exc:
+            logger.error(f"Could not process download counter: {exc}")
+            if settings.DEBUG:
+                raise exc
 
     return sendfile(request, instance.file.path)
