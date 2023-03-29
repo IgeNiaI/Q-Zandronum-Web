@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.52.1-b-2"
+__version__ = "0.52.1-b-3"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -215,10 +215,10 @@ class BaseSettings():
         'django': {
             'handlers': ['console'],
             'propagate': True,
-            'level': 'DEBUG',
+            'level': 'INFO',
         },
         "loggers": {
-            "django": {"handlers": ["console"], "level": "DEBUG", "propagate": True}
+            "django": {"handlers": ["console"], "level": "INFO", "propagate": True}
         }
     }
 

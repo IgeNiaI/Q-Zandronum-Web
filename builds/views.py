@@ -202,6 +202,7 @@ def test_download_time_to_count(request, build, instance_id):
     # return True to count
 
     key = f"{build}#{instance_id}"
+    # print(f" >> check key {key}")
     download_time = request.session.get(key, None)
     if download_time:
         download_time = datetime.fromisoformat(download_time)
@@ -213,7 +214,7 @@ def test_download_time_to_count(request, build, instance_id):
     else:
         request.session[key] = datetime.now().isoformat(timespec='minutes')
         do_count = True
-    print(f"session download time to count: {do_count} ({download_time})")
+    # print(f"session download time to count: {do_count} ({download_time})")
     return do_count
 
 
@@ -228,6 +229,18 @@ def test_range_header_to_count(request_meta):
     return zero_byte_flag
 
 
+def count_conditionally(request, build, instance):
+    try:
+        session_flag = test_download_time_to_count(request, build, instance.id)
+        if test_range_header_to_count(request.META) and session_flag:
+            logging.info(f"increment for {instance.id}")
+            WeeklyDownloadCounter.objects.increment_for_build(instance)
+    except Exception as exc:
+        logger.error(f"Could not process download counter: {exc}")
+        if settings.DEBUG:
+            raise exc
+
+
 @register_view(views)
 def build_download(request, platform, build='qz', doomseeker=False):
     logger.debug(f"Counter download for '{build} {platform}' (ds {doomseeker})")
@@ -236,7 +249,7 @@ def build_download(request, platform, build='qz', doomseeker=False):
             platform__name=platform, has_doomseeker=doomseeker
         ).order_by('-version').first()
     elif build.lower() == "qcde":
-        instance = QCDEBuild.objects.filter(platform=platform).order_by('-version').first()
+        instance = QCDEBuild.objects.filter(platform__name=platform).order_by('-version').first()
     else:
         raise Http404
 
@@ -244,18 +257,26 @@ def build_download(request, platform, build='qz', doomseeker=False):
         raise Http404("<h1>File not found for given parameters</h1>")
 
     if not request.user.is_superuser:
-        # check if file was already downloaded recently
-
-        try:
-            if all((
-                    test_range_header_to_count(request.META),
-                    test_download_time_to_count(request, build, instance.id)
-                    )):
-                logging.info(f"increment for {instance.id}")
-                WeeklyDownloadCounter.objects.increment_for_build(instance)
-        except Exception as exc:
-            logger.error(f"Could not process download counter: {exc}")
-            if settings.DEBUG:
-                raise exc
+        count_conditionally(request, build, instance)
 
     return sendfile(request, instance.file.path)
+
+
+"""
+@register_view(views)
+def build_by_filename(request, filename):
+    kwargs = {"file": filename}
+    if Build.objects.filter(**kwargs).exists():
+        instance = Build.object.get(**kwargs)
+        build = "qz"
+    elif QCDEBuild.objects.filter(**kwargs).exists():
+        instance = QCDEBuild.objects.get(**kwargs):
+        build = "qcde"
+    else
+        raise Http404
+
+    if not request.user.is_superuser:
+        count_conditionally(request, build, instance)
+
+    return sendfile(request, instance.file.path)
+"""

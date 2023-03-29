@@ -20,6 +20,13 @@ from django.utils.translation import gettext_lazy as _
 from .storage import BuildOverwriteStorage
 
 
+def start_of_week_by_day(day=None):
+    if day is None:
+        day = timezone.now().date()
+    start_of_week = day - timedelta(days=day.weekday())
+    return start_of_week
+
+
 class ChunkedUploadItem(ChunkedUpload):
     """ a proxy to default ChunkedUpload """
     class Meta:
@@ -48,25 +55,23 @@ class Platform(models.Model):
 
 
 class WeeklyDownloadCounterQuerySet(models.QuerySet):
-    def for_today(self, build):
-        today = timezone.now().date()
-        # end_of_week = today + timedelta(days=7-today.weekday())
-        start_of_week = today - timedelta(days=today.weekday())
+    def for_day(self, build, day=None):
+        start_of_week = start_of_week_by_day(day)
 
         if isinstance(build, Build):
             kwargs = {'build': build}
         elif isinstance(build, QCDEBuild):
             kwargs = {'qcde_build': build}
         else:
-            raise ValueError("build argument of 'for_today' must be instance of Build or QCDEBuild!")
+            raise ValueError("build argument of 'for_day' must be instance of Build or QCDEBuild!")
 
         kwargs['start_date'] = start_of_week
 
         counter, created = self.get_or_create(**kwargs)
         return counter, created
 
-    def increment_for_build(self, build):
-        counter, created = self.for_today(build)
+    def increment_for_build(self, build, day=None):
+        counter, created = self.for_day(build, day)
         counter.value = models.F('value') + 1
         counter.save(update_fields=['value'])
 
@@ -104,6 +109,14 @@ class WeeklyDownloadCounter(models.Model):
 class BuildQuerySet(models.QuerySet):
     def annotate_downloads(self):
         return self.annotate(total_downloads=models.Sum("download_counters__value"))
+
+    def annotate_recent_downloads(self):
+        recent = WeeklyDownloadCounter.objects.filter(build=models.OuterRef('pk'))
+        start_of_week = start_of_week_by_day()
+        qs = self.annotate(recent_downloads=models.Subquery(
+            recent.filter(start_date=start_of_week).values('value'))
+        )
+        return qs
 
 
 class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
@@ -163,7 +176,14 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
         return super().delete(*args, **kwargs)
 
     def get_total_downloads(self):
+        """ annotation access method """
         return self.total_downloads
+    get_total_downloads.short_description = "total downloads"
+
+    def get_recent_downloads(self):
+        """ annotation access method """
+        return self.recent_downloads
+    get_recent_downloads.short_description = "downloads this week"
 
 
 class Build(AbstractBuild):
