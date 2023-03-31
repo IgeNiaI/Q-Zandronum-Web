@@ -66,9 +66,9 @@
             <div class='col text-center'>
                 <a class="btn shadow btn-danger btn-huge"
                     {% if primary_build  %}
-                    href='{{ primary_build.file.url }}'
+                    href='{{ primary_build.get_absolute_url }}'
                     {% elif secondary_build %}
-                    href='{{ secondary_build.file.url }}'
+                    href='{{ secondary_build.get_absolute_url }}'
                     {% endif %}>
                 PLAY NOW
                 </a>
@@ -83,23 +83,6 @@
                              alt='{{ slide.img_alt }}'>
                     </div>
                     {% endfor %}
-                    {% comment %}
-                    <div class="carousel-item" id='slide-0'> {# don't set "active" class here or transition won't happen #}
-                        <img class="d-block w-100" src="{% static 'qcde/maps/Aerowalk.webp' %}">
-                    </div>
-                    <div class="carousel-item" id='slide-1'>
-                        <img class="d-block w-100" data-src="{% static 'qcde/maps/ASDF.webp' %}">
-                    </div>
-                    <div class="carousel-item" id='slide-2'>
-                        <img class="d-block w-100" data-src="{% static 'qcde/maps/Awoken.webp' %}">
-                    </div>
-                    <div class="carousel-item" id='slide-3'>
-                        <img class="d-block w-100" data-src="{% static 'qcde/maps/Blood Covenant.webp' %}">
-                    </div>
-                    <div class="carousel-item" id='slide-4'>
-                        <img class="d-block w-100" data-src="{% static 'qcde/maps/Campgrounds.webp' %}">
-                    </div>
-                    {% endcomment %}
                 </div>
             </div>
         </div>
