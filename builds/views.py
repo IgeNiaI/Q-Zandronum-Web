@@ -220,10 +220,11 @@ def test_download_time_to_count(request, build, instance_id):
 
 def test_range_header_to_count(request_meta):
     range_header = request_meta.get("HTTP_RANGE", "")
+
     if range_header:
         zero_byte_flag = re.match(r"^bytes=0", range_header.lower())
         if not zero_byte_flag:
-            logger.info(f"Non-zero Range header: '{range_header}'")
+            logger.debug(f"Non-zero Range header: '{range_header}'")
     else:
         zero_byte_flag = True
     return zero_byte_flag
@@ -257,8 +258,10 @@ def build_download(request, platform, build='qz', doomseeker=False):
         raise Http404("<h1>File not found for given parameters</h1>")
 
     if not request.user.is_superuser:
+        logger.debug(f"increment conditionally counter for {build} '{instance}'")
         count_conditionally(request, build, instance)
 
+    logger.debug(f"grant access to {build} '{instance}'")
     return sendfile(request, instance.file.path)
 
 
