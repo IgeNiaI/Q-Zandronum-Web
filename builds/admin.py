@@ -122,7 +122,8 @@ class QCDEBuildAdmin(BuildAdmin):
         ('file_datetime', 'create_datetime'),
     )
 
-    list_display = ('platform', 'file_link', 'version', 'get_total_downloads',
+    list_display = ('platform', 'file_link', 'version',
+                    'get_total_downloads',  'get_recent_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
 
 
