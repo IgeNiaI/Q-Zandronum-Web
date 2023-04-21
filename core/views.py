@@ -51,7 +51,7 @@ class IndexView(PageConfigMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        builds = Build.objects.select_related('platform').order_by('platform__priority', 'has_doomseeker')
+        builds = Build.objects.select_related('platform').public().order_by('platform__priority', 'has_doomseeker')
         context['builds'] = builds
         context['page_config'] = self.get_page_config()
         return context
@@ -64,7 +64,7 @@ class QcdeView(PageConfigMixin, TemplateView):
     page_name = 'qcde_index'
 
     def get_builds(self, **kwargs):
-        return QCDEBuild.objects.select_related('platform').filter(**kwargs).order_by('-version')
+        return QCDEBuild.objects.select_related('platform').public(**kwargs).order_by('-version')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

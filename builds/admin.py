@@ -66,14 +66,14 @@ class BuildAdmin(admin.ModelAdmin):
     upload_url = reverse_lazy("chunked_upload")
     # change_list_template = 'admin/build_change_list.html'
 
-    list_display = ('platform', 'file_link', 'has_doomseeker', 'version',
+    list_display = ('platform', 'file_link', 'is_public', 'has_doomseeker', 'version',
                     'get_total_downloads', 'get_recent_downloads',
                     'crc32', 'humanize_size', 'update_datetime')
     readonly_fields = ('file_datetime', 'create_datetime', 'upload_link')
 
     fields = (
         ('file', 'upload_link'),
-        'version',
+        ('version', 'is_public'),
         ('platform', 'has_doomseeker'),
         ('crc32', 'checksum_a'),
         'size',
@@ -100,10 +100,17 @@ class BuildAdmin(admin.ModelAdmin):
             file cleanup.
         """
         for obj in queryset:
+            obj.download_counters.all().delete()
             obj.delete()
     delete_with_files.short_description = _("Delete with files")
 
-    actions = (rename_files, delete_with_files)
+    def toggle_public(modeladmin, request, queryset):
+        for obj in queryset:
+            obj.is_public = not(obj.is_public)
+            obj.save(update_fields=['is_public'])
+    toggle_public.short_description = _("Toggle public status")
+
+    actions = (rename_files, delete_with_files, toggle_public)
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate_downloads().annotate_recent_downloads()

@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.52.1-b-6"
+__version__ = "0.53.1-a-1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -233,7 +233,7 @@ class DevSettings(BaseSettings):
     # SECURITY WARNING: define the correct hosts in production!
     ALLOWED_HOSTS = ['*']
 
-    INTERNAL_IPS = ['127.0.0.1', '192.168.2.49', '176.193.124.192']
+    INTERNAL_IPS = ['127.0.0.1']
 
 
 class LiveSettings(BaseSettings):

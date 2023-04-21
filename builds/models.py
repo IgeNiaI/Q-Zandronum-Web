@@ -107,16 +107,27 @@ class WeeklyDownloadCounter(models.Model):
 
 
 class BuildQuerySet(models.QuerySet):
+    recent_downloads_filter_kwargs = {'build': models.OuterRef('pk')}
+
+    def public(self, *args, **kwargs):
+        if kwargs.get('is_public', True) is not True:
+            raise ValueError("public() method of %s can't be called with is_public not being True" % self.__class__.__name__)
+        return self.filter(is_public=True, *args, **kwargs)
+
     def annotate_downloads(self):
         return self.annotate(total_downloads=models.Sum("download_counters__value"))
 
     def annotate_recent_downloads(self):
-        recent = WeeklyDownloadCounter.objects.filter(build=models.OuterRef('pk'))
+        recent = WeeklyDownloadCounter.objects.filter(**self.recent_downloads_filter_kwargs)
         start_of_week = start_of_week_by_day()
         qs = self.annotate(recent_downloads=models.Subquery(
             recent.filter(start_date=start_of_week).values('value'))
         )
         return qs
+
+
+class QCDEBuildQuerySet(BuildQuerySet):
+    recent_downloads_filter_kwargs = {'qcde_build': models.OuterRef('pk')}
 
 
 class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
@@ -155,6 +166,9 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
                              " use format '<method>|<hexdigest>'")
 
     version = models.CharField(max_length=255)
+
+    is_public = models.BooleanField(default=True)
+    is_public.help_text = _('show this build on the site')
 
     file_datetime = models.DateTimeField(
         verbose_name=_('date and time file was changed'),
@@ -244,6 +258,8 @@ class QCDEBuild(AbstractBuild):
     file = models.FileField(upload_to=make_filename,
                             storage=BuildOverwriteStorage())
     platform = models.ForeignKey('Platform', on_delete=models.PROTECT)
+
+    objects = QCDEBuildQuerySet.as_manager()
 
     def __str__(self):
         return f"QCDE {self.platform} [{self.version}]"

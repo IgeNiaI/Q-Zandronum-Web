@@ -245,14 +245,15 @@ def count_conditionally(request, build, instance):
 @register_view(views)
 def build_download(request, platform, build='qz', doomseeker=False):
     logger.debug(f"Counter download for '{build} {platform}' (ds {doomseeker})")
+
     if build.lower() == "qz":
-        instance = Build.objects.filter(
-            platform__name=platform, has_doomseeker=doomseeker
-        ).order_by('-version').first()
+        qs = Build.objects.public(platform__name=platform, has_doomseeker=doomseeker)
     elif build.lower() == "qcde":
-        instance = QCDEBuild.objects.filter(platform__name=platform).order_by('-version').first()
+        qs = QCDEBuild.objects.public(platform__name=platform)
     else:
         raise Http404
+
+    instance = qs.order_by('-version').first()
 
     if instance is None:
         raise Http404("<h1>File not found for given parameters</h1>")

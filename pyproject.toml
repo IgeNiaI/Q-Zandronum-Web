@@ -1,11 +1,11 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.52.1-b"
+version = "0.53.1-a"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
 [tool.poetry.dependencies]
-python = "^3.10.4"
+python = "^3.10.6"
 pre-commit = "~2"
 django-classy-settings = "^2.1"
 Django = "3.2.*"
@@ -14,10 +14,10 @@ celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git", rev = "11a
 
 pip = ">=20.2.4"
 bleach = "^3.2"
-django-sniplates = "^0.7.0"
+django-sniplates = ">=0.7.1"
 uWSGI = "^2.0.21"
 psycopg2 = "^2.8.6"
-django-chunked-upload = "^2.0.0"
+django-chunked-upload =  { git = "https://github.com/tngeene/django-chunked-upload.git", rev = "7bc88b6" }
 httpagentparser = "^1.9.5"
 pillow = "^9.3.0"
 django-sendfile2 = "^0.7.0"
