@@ -137,19 +137,19 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
 
     _file_fields_to_process = {
         'file': {
-            'checksum_a':
-            {
-                'function': hashlib.sha1,
-                'attr': 'hexdigest',
-                'postprocessor': lambda val: 'sha1|' + val,  # | is a separator for checksum method
-                'update_datetime_field': 'file_datetime',
-            },
             # 'checksum_a':
             # {
-            #     'function': '/usr/bin/sha1sum',
-            #     'postprocessor': lambda val: 'sha1|' + val.split(" ")[0].strip(),
+            #     'function': hashlib.sha1,
+            #     'attr': 'hexdigest',
+            #     'postprocessor': lambda val: 'sha1|' + val,  # | is a separator for checksum method
             #     'update_datetime_field': 'file_datetime',
             # },
+            'checksum_a':
+            {
+                'function': '/usr/bin/sha1sum',
+                'postprocessor': lambda val: 'sha1|' + val.split(" ")[0].strip(),
+                'update_datetime_field': 'file_datetime',
+            },
             'crc32': {'function': zlib.crc32, 'postprocessor': lambda val: f"{val:X}"},
             # 'crc32': {'function': '/usr/bin/crc32', 'attr': 'upper'},
             'size': {'function': lambda field: field.size, 'preprocessor': '__field__'}

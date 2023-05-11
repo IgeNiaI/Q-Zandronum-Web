@@ -24,7 +24,7 @@
     {% for build in builds %}
         {% widget "widgets:download_item" build=build %}
     {% empty %}
-        <div class='col-md'>{% trans 'No builds is available now!' %}</div>
+        <div class='col-md'>{% trans 'No builds are available now!' %}</div>
     {% endfor %}
     </div>
 </div>
@@ -39,5 +39,16 @@
     {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum/issues' icon_class='bug fas' %}
     {% trans 'Source code' as label %}
     {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum' icon_class='github fab' %}
+</div>
+<div class='mx-auto'>
+    <h3 class='my-3'>Mods using Q-Zandronum</h3>
+    <div class='mx-auto mb-3 font-weight-bold d-flex justify-content-around align-items-center' style='font-size: 135%'>
+        <span>
+            <a class='accent-colour' href='{% url "qcde" %}'><img src='{% static "QC128.png" %}' style='height: 48px; margin-right:5px;'>QC:DE</a>
+        </span>
+        <span>
+            <a class='accent-colour' href='https://auratoostronk.github.io/alphatiuswebsite/'><img src='{% static "alphlogo.png" %}' style='height: 48px'>Alphatius</a>
+        </span>
+    </div>
 </div>
 {% endblock footer %}

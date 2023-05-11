@@ -97,34 +97,6 @@
 
 {% block footer_classes %}qcde d-flex flex-column justify-content-end{% endblock %}
 
-<footer class='qcde d-flex flex-column justify-content-end'>
-    {% if user.is_staff %}
-    <div class='mx-auto'>
-        <a href='{% url "admin:index" %}'>{% trans 'Administration' %}</a> -
-        <a href='{% url "qcde_chunked_upload" %}'>{% trans "QCDE Build upload" %}</a>
-    </div>
-    {% endif %}
-
-    {% now 'Y' as year %}{# used in copyright string #}
-    <div class='subcolour d-flex flex-row flex-wrap justify-content-center mt-3 mx-2' id='copyrights'>
-        <span><i class="fas fa-copyright"></i> <b>{% if year != '2020' %}2020-{% endif %}{{ year }} Evghenii Olenciuc</b></span>
-        <span class='font-weight-light mx-1'>
-            <i class="fas fa-flag"></i>
-            <a href='https://fontawesome.com/' target="_blank">fontawesome</a>
-        </span>
-        <span>
-            <i class="fab fa-python"></i>
-            {% if user.is_staff %}
-                ver. <span class='font-weight-normal'>{{ PROJECT_VERSION }}</span>
-            {% endif %}
-            powered by
-            <b class='font-weight-normal'>
-                <a href='https://www.djangoproject.com/' target="_blank">django</a>
-            </b>
-            {% if user.is_superuser %}
-            {{ DJANGO_VERSION }}
-            {% endif %}
-
-        </span>
-    </div>
-</footer>
+{% block footer %}
+<h3 class='mb-3 mx-auto'>Powered by <a href='{% url "index" %}'>Q-Zandronum</a></h3>
+{% endblock footer %}

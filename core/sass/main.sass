@@ -56,6 +56,9 @@ h1, h2, h3
     a
         color: $alt_bg_link
         text-decoration: none
+        &.accent-colour
+            color: lighten($accent-colour, 12%)
+            text-decoration: underline
         &:hover
             color: $alt_bg_font
     .subcolour

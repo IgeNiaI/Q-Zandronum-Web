@@ -2,6 +2,7 @@
 {
     --nav-height: 56px;
     --footnote-height: 18px;
+    --shadow-base: rgba(0,0,0,0.2);
 }
 
 #ytplayer
@@ -40,6 +41,9 @@ main
     max-width: 900px;
     z-index: 2;
     margin-top: var(--nav-height);
+    background: rgba(0,0,0,0.4);
+    box-shadow: 0px 0px 20px var(--shadow-base), 0px 0px 10px var(--shadow-base), 0px 0px 5px rgba(0,0,0,0.4);
+    padding: 2rem;
 }
 body
 {
@@ -89,13 +93,13 @@ footer
 
 .qcde a:hover
 {
-    color: #E00;
+    color: #F00;
 }
 
-.qcde a:visited
+/*.qcde a:visited
 {
     color: #C00;
-}
+}*/
 
 .carousel-item.active > img
 {
