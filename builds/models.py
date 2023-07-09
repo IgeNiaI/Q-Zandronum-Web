@@ -163,7 +163,7 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
     crc32.help_text = _("filled automatically")
     checksum_a = models.CharField(max_length=144, blank=True)
     checksum_a.help_text = _("filled automatically by file upload, supposed to"
-                             " use format '<method>|<hexdigest>'")
+                             " use format '&lt;method&gt;|&lt;hexdigest&gt;'")
 
     version = models.CharField(max_length=255)
 
