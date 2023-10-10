@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.54.2a1"
+version = "0.54.2"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
@@ -19,7 +19,7 @@ uWSGI = "^2.0.21"
 psycopg2 = "^2.8.6"
 django-chunked-upload =  { git = "https://github.com/tngeene/django-chunked-upload.git", rev = "7bc88b6" }
 httpagentparser = "^1.9.5"
-pillow = "^9.3.0"
+pillow = "10.*"
 django-sendfile2 = "^0.7.0"
 
 
