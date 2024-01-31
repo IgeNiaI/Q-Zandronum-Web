@@ -5,7 +5,7 @@ from django.views.generic import RedirectView
 from .views import views
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', views.switch_view, name='index'),
     path('qcde/', views.qcde, name='qcde'),
     path('auth/login/', LoginView.as_view(), name='login'),
     re_path('(?:en|ru)/', RedirectView.as_view(pattern_name='index', permanent=True),),

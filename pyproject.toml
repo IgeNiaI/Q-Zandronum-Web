@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.54.2"
+version = "0.54.3a0"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 

@@ -98,5 +98,5 @@
 {% block footer_classes %}qcde d-flex flex-column justify-content-end{% endblock %}
 
 {% block footer %}
-<h3 class='mb-3 mx-auto'>Powered by <a href='{% url "index" %}'>Q-Zandronum</a></h3>
+<h3 class='mb-3 mx-auto'>Powered by <a href='{{ MAIN_URL }}{% url "index" %}'>Q-Zandronum</a></h3>
 {% endblock footer %}

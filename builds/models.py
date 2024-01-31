@@ -2,6 +2,7 @@ import hashlib
 import zlib
 from datetime import datetime, timedelta
 from pathlib import Path
+from urllib.parse import urljoin
 
 from celestia.abstract_models import (AbstractDateTimeTrackedModel,
                                       FileProcessingMixin)
@@ -236,9 +237,10 @@ class Build(AbstractBuild):
 
     def get_absolute_url(self):
         if self.has_doomseeker:
-            return reverse("build_download_ds", kwargs={"platform": self.platform})
+            url = reverse("build_download_ds", kwargs={"platform": self.platform})
         else:
-            return reverse("build_download", kwargs={"platform": self.platform, "build": 'qz'})
+            url = reverse("build_download", kwargs={"platform": self.platform, "build": 'qz'})
+        return urljoin(settings.MAIN_URL, url)
 
 
 class QCDEBuild(AbstractBuild):
@@ -265,7 +267,7 @@ class QCDEBuild(AbstractBuild):
         return f"QCDE {self.platform} [{self.version}]"
 
     def get_absolute_url(self):
-        return reverse("build_download", kwargs={"platform": self.platform, "build": 'qcde'})
+        return urljoin(settings.MAIN_URL, reverse("build_download", kwargs={"platform": self.platform, "build": 'qcde'}))
 
 
 class TranslatedFeatureQuerySet(BaseTranslatedQuerySet):

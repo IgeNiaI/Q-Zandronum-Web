@@ -36,6 +36,16 @@ class PageConfigMixin:
 
 
 @register_view(views)
+def switch_view(request):
+    host_requested = request.META['HTTP_HOST'].lower()
+    # logger.info(f"HOST: '{host_requested}'")
+    if host_requested == "qcde.net" or request.GET.get('force_host_qcde'):
+        return QcdeView.as_view()(request)
+    else:
+        return IndexView.as_view()(request)
+
+
+@register_view(views)
 @method_decorator(gzip_page, name='dispatch')
 class IndexView(PageConfigMixin, ListView):
     template_name = 'index.html'

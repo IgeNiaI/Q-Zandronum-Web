@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.54.2"
+__version__ = "0.54.3a0"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -92,6 +92,7 @@ class BaseSettings():
         'PROJECT_VERSION',
         'DJANGO_VERSION',
         'DISCORD_LINK',
+        'MAIN_URL',
         # 'COMMON_SCRIPTS',
         # 'COMMON_STYLES',
     )
@@ -138,6 +139,11 @@ class BaseSettings():
     LOGIN_URL = '/auth/login/'
     LOGIN_REDIRECT_URL = '/'
 
+    @cbs.env
+    def MAIN_URL(self):
+        # must not include trailing /
+        return ""
+
     DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 
     # Password validation
@@ -169,7 +175,7 @@ class BaseSettings():
     # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
     @cbs.env
-    def DISCORD_LINK(seld):
+    def DISCORD_LINK(self):
         return "https://discord.gg/u4ptaMk"
 
     # WARNING! Cast to Path!
@@ -243,9 +249,12 @@ class LiveSettings(BaseSettings):
     MANAGERS = ADMINS
 
     # NOTE: define the correct hosts in production!
-    ALLOWED_HOSTS = ['qzandronum.com',
+    MAIN_HOST = "qzandronum.com"
+    MAIN_URL = f"https://{MAIN_HOST}" # must not include trailing /
+    ALLOWED_HOSTS = [MAIN_HOST,
                      '70.35.196.63',
                      'www.qzandronum.com',
+                     'qcde.net',
                      'q-zandronum.com',
                      'www.q-zandronum.com']
 
@@ -255,6 +264,8 @@ class LiveSettings(BaseSettings):
             'NAME': 'qzandronum',
         }
     }
+
+    STATIC_URL = f'{MAIN_URL}/static/'
 
     LOGGING = {  # 'email_backend': "django.core.mail.backends.console.EmailBackend",
         "version": 1,
