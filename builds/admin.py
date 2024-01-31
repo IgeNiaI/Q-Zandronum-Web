@@ -1,4 +1,5 @@
 from celestia.translation.admin import TransFormSetMixin
+
 # from django.conf import settings
 from django.contrib import admin
 from django.db.models import Count
@@ -96,8 +97,8 @@ class BuildAdmin(admin.ModelAdmin):
         )
 
     def delete_with_files(modeladmin, request, queryset):
-        """ run delete on every instance to trigger custom code for
-            file cleanup.
+        """
+        run delete on every instance to trigger custom code for file cleanup.
         """
         for obj in queryset:
             obj.download_counters.all().delete()
@@ -106,7 +107,7 @@ class BuildAdmin(admin.ModelAdmin):
 
     def toggle_public(modeladmin, request, queryset):
         for obj in queryset:
-            obj.is_public = not(obj.is_public)
+            obj.is_public = not (obj.is_public)
             obj.save(update_fields=['is_public'])
     toggle_public.short_description = _("Toggle public status")
 

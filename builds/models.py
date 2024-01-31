@@ -1,14 +1,13 @@
-import hashlib
+"""Includes models for build files and download counters."""
+
 import zlib
 from datetime import datetime, timedelta
 from pathlib import Path
 from urllib.parse import urljoin
 
-from celestia.abstract_models import (AbstractDateTimeTrackedModel,
-                                      FileProcessingMixin)
+from celestia.abstract_models import AbstractDateTimeTrackedModel, FileProcessingMixin
 from celestia.bleach_models import BleachMixin
-from celestia.translation.models import (AbstractTranslatedModel,
-                                         BaseTranslatedQuerySet)
+from celestia.translation.models import AbstractTranslatedModel, BaseTranslatedQuerySet
 from celestia.utils import split_multiple_ext
 from chunked_upload.models import ChunkedUpload
 from django.conf import settings
@@ -29,7 +28,8 @@ def start_of_week_by_day(day=None):
 
 
 class ChunkedUploadItem(ChunkedUpload):
-    """ a proxy to default ChunkedUpload """
+    """a proxy to default ChunkedUpload."""
+
     class Meta:
         proxy = True
 
@@ -38,7 +38,8 @@ class ChunkedUploadItem(ChunkedUpload):
 
 
 class Platform(models.Model):
-    """ Target OS platforms """
+    """Target OS platforms."""
+
     class Meta:
         verbose_name = _('platform')
         verbose_name_plural = _('platforms')
@@ -132,7 +133,8 @@ class QCDEBuildQuerySet(BuildQuerySet):
 
 
 class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
-    """ Base build model. Implements file related feautures like cheksums and file removal """
+    """Base build model. Implements file related feautures like cheksums and file removal."""
+
     class Meta:
         abstract = True
 
@@ -186,23 +188,24 @@ class AbstractBuild(FileProcessingMixin, AbstractDateTimeTrackedModel):
             return val[-1]
 
     def delete(self, *args, **kwargs):
-        """ remove file before removing instance """
+        """Remove file before removing instance."""
         self.file.delete(save=False)
         return super().delete(*args, **kwargs)
 
     def get_total_downloads(self):
-        """ annotation access method """
+        """Annotation access method."""
         return self.total_downloads
     get_total_downloads.short_description = "total downloads"
 
     def get_recent_downloads(self):
-        """ annotation access method """
+        """Annotation access method."""
         return self.recent_downloads
     get_recent_downloads.short_description = "downloads this week"
 
 
 class Build(AbstractBuild):
-    """ Q-Zandronum build model """
+    """Q-Zandronum build model."""
+
     class Meta:
         verbose_name = _('build')
         verbose_name_plural = _('builds')
@@ -244,7 +247,8 @@ class Build(AbstractBuild):
 
 
 class QCDEBuild(AbstractBuild):
-    """ QC:DE build model """
+    """QC:DE build model."""
+
     class Meta:
         verbose_name = _('QCDE build')
         verbose_name_plural = _('QCDE builds')
@@ -295,7 +299,7 @@ class TranslatedFeature(BleachMixin, AbstractTranslatedModel):  # , AbstractDate
     BLEACH_SHOW_FIELDS = {'label_code': {'tags': ['b', 'i', 'u', 'span', 'p', 'sub']}}
 
     def cleaned_label(self):
-        """ uses implementation of BleachMixin """
+        """Uses implementation of BleachMixin."""
         if self.base.label_is_html:
             # bleach and mark string as safe
             return self._bleach_field('label_code')
