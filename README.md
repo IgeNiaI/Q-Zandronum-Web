@@ -14,6 +14,23 @@ $ poetry install
 $ python manage.py check
 ```
 
+### Isues with poetry
+If it hangs or errors out it might be because of it's strange keyring usage.
+Try env var `PYTHON_KEYRING_BACKEND=keyring.backends.fail.Keyring`
+
+## Upgrading packages
+On local repo:
+```bash
+$ poetry update
+```
+Resolves dependecies based on `pyproject.toml` and installs them. Commit `poetry.lock` and push it.
+
+On remote repo:
+```bash
+$ poetry install
+```
+Will use `poetry.lock` to install exact versions of packages.
+
 ## Configuration
 ### settings.py file
 > some settings are read from environment variables, see uWSGI service file.

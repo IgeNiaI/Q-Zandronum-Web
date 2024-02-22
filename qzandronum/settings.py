@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.54.3a0"
+__version__ = "0.54.3a1"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -250,7 +250,7 @@ class LiveSettings(BaseSettings):
 
     # NOTE: define the correct hosts in production!
     MAIN_HOST = "qzandronum.com"
-    MAIN_URL = f"https://{MAIN_HOST}" # must not include trailing /
+    MAIN_URL = f"https://{MAIN_HOST}"  # must not include trailing /
     ALLOWED_HOSTS = [MAIN_HOST,
                      '70.35.196.63',
                      'www.qzandronum.com',
