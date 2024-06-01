@@ -43,8 +43,16 @@
 <div class='mx-auto'>
     <h3 class='my-3'>Mods using Q-Zandronum</h3>
     <div class='mx-auto mb-3 font-weight-bold d-flex justify-content-around align-items-center' style='font-size: 135%'>
-        <span>
-            <a class='accent-colour' href='{% url "qcde" %}'><img src='{% static "QC128.png" %}' style='height: 48px; margin-right:5px;'>QC:DE</a>
+        <span>{% spaceless %}
+            <a class='accent-colour'
+                {% if MAIN_HOST %}
+                href='https://{{ QCDE_HOST }}/'
+                {% else %}
+                href='{% url "qcde" %}'
+                {% endif %}
+                >
+            {% endspaceless %}
+            <img src='{% static "QC128.png" %}' style='height: 48px; margin-right:5px;'>QC:DE</a>
         </span>
         <span>
 

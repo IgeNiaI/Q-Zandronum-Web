@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.54.3a1"
+__version__ = "0.54.3a2"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -93,6 +93,8 @@ class BaseSettings():
         'DJANGO_VERSION',
         'DISCORD_LINK',
         'MAIN_URL',
+        'MAIN_HOST',
+        'QCDE_HOST',
         # 'COMMON_SCRIPTS',
         # 'COMMON_STYLES',
     )
@@ -138,6 +140,9 @@ class BaseSettings():
     AUTH_USER_MODEL = 'core.CoreUser'
     LOGIN_URL = '/auth/login/'
     LOGIN_REDIRECT_URL = '/'
+
+    MAIN_HOST = ""  # leave empty for local\dev
+    QCDE_HOST = "qcde.net"
 
     @cbs.env
     def MAIN_URL(self):
