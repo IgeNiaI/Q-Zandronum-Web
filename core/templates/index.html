@@ -42,8 +42,8 @@
 </div>
 <div class='mx-auto'>
     <h3 class='my-3'>Mods using Q-Zandronum</h3>
-    <div class='mx-auto mb-3 font-weight-bold d-flex justify-content-around align-items-center' style='font-size: 135%'>
-        <span>{% spaceless %}
+    <div class='mx-auto mb-3 font-weight-bold d-flex justify-content-around align-items-center flex-wrap'>
+        <div class='mod-item'>{% spaceless %}
             <a class='accent-colour'
                 {% if MAIN_HOST %}
                 href='https://{{ QCDE_HOST }}/'
@@ -52,12 +52,18 @@
                 {% endif %}
                 >
             {% endspaceless %}
-            <img src='{% static "QC128.png" %}' style='height: 48px; margin-right:5px;'>QC:DE</a>
-        </span>
-        <span>
-
-            <a class='accent-colour' href='https://auratoostronk.github.io/alphatiuswebsite/'><img src='{% static "alphlogo.png" %}' style='height: 48px'>Alphatius</a>
-        </span>
+            <img src='{% static "QC128.png" %}' alt="QC:DE" style='height: 48px; margin-right:5px;'>QC:DE</a>
+        </div>
+        <div class='mod-item'>
+            <a class='accent-colour' href='https://auratoostronk.github.io/alphatiuswebsite/'>
+                <img src='{% static "alphlogo.png" %}' alt="Alphatius">Alphatius
+            </a>
+        </div>
+        <div class='mod-item'>
+            <a class='accent-colour' href='https://sites.google.com/view/dlitpotq/main' title='Davidi Lost in Time: Play of the Qind'>
+                <img src='{% static "PoTQ48.png" %}' alt="PoTQ" style='border-radius: 20%; margin-right:5px;'>DLiT:PoTQ
+            </a>
+        </div>
     </div>
 </div>
 {% endblock footer %}
