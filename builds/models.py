@@ -55,6 +55,9 @@ class Platform(models.Model):
     def __str__(self):
         return self.name
 
+    def is_linux(self):
+        return self.name.lower().startswith("linux")
+
 
 class WeeklyDownloadCounterQuerySet(models.QuerySet):
     def for_day(self, build, day=None):

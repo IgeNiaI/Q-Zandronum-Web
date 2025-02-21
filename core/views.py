@@ -96,3 +96,9 @@ class QcdeView(PageConfigMixin, TemplateView):
 
         context['page_config'] = self.get_page_config()
         return context
+
+@register_view(views)
+@method_decorator(gzip_page, name='dispatch')
+class GuideView(TemplateView):
+    template_name = 'Installing_QCDE_on_Linux.html'
+    page_name = "GUIDE"
