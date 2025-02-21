@@ -1,5 +1,5 @@
 {% extends "base_qz.html" %}
-{% load static i18n sniplates %}
+{% load static i18n %}
 
 {% block main %}
     <div class="container d-flex flex-grow-1 align-items-center justify-content-around">
@@ -17,12 +17,12 @@
     </div>
 {% endblock main %}
 
-{% block footer %} {% load_widgets widgets='sniplates_widgets.html' %}
+{% block footer %}
 <h2 class='mb-3'>{% trans 'Downloads' %}</h2>
 <div id="downloads" class="container flex-grow-2">
     <div class='d-flex row justify-content-around'>
     {% for build in builds %}
-        {% widget "widgets:download_item" build=build %}
+        {% include "snip.download_item.html" with build=build %}
     {% empty %}
         <div class='col-md'>{% trans 'No builds are available now!' %}</div>
     {% endfor %}
@@ -32,13 +32,13 @@
 
 <div id='links' class='container-sm d-flex justify-content-around align-items-center flex-wrap flex-grow-1'>
     {% trans 'QC:DE Discord' as label %}
-    {% widget "widgets:link_item" label=label url=DISCORD_LINK icon_class='discord fab' %}
+    {% include "snip.link_item.html" with label=label url=DISCORD_LINK icon_class='discord fab' %}
     {% trans 'Project Wiki' as label %}
-    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum/wiki' icon_class='atlas fas' %}
+    {% include "snip.link_item.html" with label=label url='https://github.com/IgeNiaI/Q-Zandronum/wiki' icon_class='atlas fas' %}
     {% trans 'Issue tracker' as label %}
-    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum/issues' icon_class='bug fas' %}
+    {% include "snip.link_item.html" with label=label url='https://github.com/IgeNiaI/Q-Zandronum/issues' icon_class='bug fas' %}
     {% trans 'Source code' as label %}
-    {% widget "widgets:link_item" label=label url='https://github.com/IgeNiaI/Q-Zandronum' icon_class='github fab' %}
+    {% include "snip.link_item.html" with label=label url='https://github.com/IgeNiaI/Q-Zandronum' icon_class='github fab' %}
 </div>
 <div class='mx-auto'>
     <h3 class='my-3'>Mods using Q-Zandronum</h3>

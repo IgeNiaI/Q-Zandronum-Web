@@ -65,7 +65,6 @@ class BaseSettings():
         'django.contrib.messages',
         # 'django.contrib.sites',  # needed for sitemap framework
         'debug_toolbar',
-        'sniplates',
         'celestia',
         'core',
         'builds',
