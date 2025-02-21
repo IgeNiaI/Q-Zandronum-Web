@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "qzandronum_site"
-version = "0.55.2a0"
+version = "0.56.0a0"
 description = "Django website for Qzandronum project"
 authors = ["Gin Fuyou <devel@doratoa.net>"]
 
@@ -8,18 +8,17 @@ authors = ["Gin Fuyou <devel@doratoa.net>"]
 python = "^3.10.6"
 pre-commit = "~2"
 django-classy-settings = "^2.1"
-Django = "3.2.*"
-django-debug-toolbar = "~2"
+Django = "==4.2.*"
+django-debug-toolbar = "==3.*"
 celestia = { git = "https://gitlab.com/GinFuyou/django-celestia.git", rev = "11a6a6cc3b05899ff604a58e3a7987b97c3e1c78"  }
 
 pip = ">=20.2.4"
 bleach = "^3.2"
-django-sniplates = ">=0.7.1"
 uWSGI = "^2.0.24"
 psycopg2 = "^2.8.6"
 django-chunked-upload =  { git = "https://github.com/tngeene/django-chunked-upload.git", rev = "7bc88b6" }
 httpagentparser = "^1.9.5"
-pillow = "10.*"
+pillow = "==11.*"
 django-sendfile2 = "^0.7.0"
 colorama = "^0.4.6"
 

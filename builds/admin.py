@@ -1,5 +1,4 @@
 from celestia.translation.admin import TransFormSetMixin
-
 # from django.conf import settings
 from django.contrib import admin
 from django.db.models import Count
