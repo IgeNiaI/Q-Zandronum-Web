@@ -1,0 +1,10 @@
+{% load i18n %}
+<div class='accent-item border shadow m-1'>
+    <a href='{{ url }}'{% if a_title %} title='{{ a_title }}'{% endif %} target="_blank">
+    <div class='d-flex row align-items-center justify-content-start'>
+        <i class="fa-2x fa-{{ icon_class|default:'link fas' }} mr-2"></i>
+        &nbsp;
+        <b>{{ label }}</b>
+    </div>
+    </a>
+</div>
