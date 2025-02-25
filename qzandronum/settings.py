@@ -21,7 +21,7 @@ from django import get_version as django_version
 from django.core.exceptions import ImproperlyConfigured
 from django.utils.translation import gettext_lazy as _
 
-__version__ = "0.56.0a0"
+__version__ = "0.56.1a0"
 
 cbs.DEFAULT_ENV_PREFIX = 'QZANDRONUM_'
 
@@ -31,6 +31,7 @@ class BaseSettings():
     PROJECT_VERSION = __version__
     DJANGO_VERSION = django_version()  # created at 3.1.3
     PROJECT_NAME = 'qzandronum'
+    CSRF_TRUSTED_ORIGINS = ["http://127.0.0.1:8000"]
 
     PROJECT_DIR = Path(__file__).resolve().parent
 
@@ -261,6 +262,10 @@ class LiveSettings(BaseSettings):
                      'qcde.net',
                      'q-zandronum.com',
                      'www.q-zandronum.com']
+
+    CSRF_TRUSTED_ORIGINS = [MAIN_URL,
+                            "https://qcde.net",
+                            "https://*.q-zandronum.com",]
 
     DATABASES = {
         'default': {
